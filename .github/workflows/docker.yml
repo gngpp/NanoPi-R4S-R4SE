@@ -54,7 +54,7 @@ jobs:
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         mkdir customfeeds
         git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
-        git clone --depth=1 https://github.com/DHDAXCW/luci customfeeds/luci
+        git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
     
@@ -87,11 +87,11 @@ jobs:
       run: |
         cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
-        make tools/compile -j$(nproc) || make tools/compile -j4
-        make toolchain/compile -j$(nproc) || make toolchain/compile -j4
+        make tools/compile -j$(nproc) || make tools/compile -j10
+        make toolchain/compile -j$(nproc) || make toolchain/compile -j10
         make target/compile -j$(nproc) || make target/compile -j10 IGNORE_ERRORS=1
         make diffconfig
-        make package/compile -j$(nproc) IGNORE_ERRORS=1 || make package/compile -j4 IGNORE_ERRORS=1
+        make package/compile -j$(nproc) IGNORE_ERRORS=1 || make package/compile -j10 IGNORE_ERRORS=1
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
