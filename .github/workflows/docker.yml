@@ -87,11 +87,11 @@ jobs:
       run: |
         cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
-        make tools/compile -j1
-        make toolchain/compile -j1
-        make target/compile -j1 IGNORE_ERRORS=1
+        make tools/compile -j1 V=s
+        make toolchain/compile -j1 V=s
+        make target/compile -j1 V=s
         make diffconfig
-        make package/compile -j1 IGNORE_ERRORS=1
+        make package/compile -j1 V=s
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
