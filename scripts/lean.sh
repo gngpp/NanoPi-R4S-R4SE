@@ -38,13 +38,12 @@ rm -rf openwrt-package/luci-app-control-weburl
 svn export https://github.com/DHDAXCW/openwrt-packages/trunk/luci-app-adguardhome
 
 # Add luci-app-passwall
-# Add luci-app-ssr-plus
-git clone --depth=1 https://github.com/sbwml/openwrt_helloworld
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
-# svn export https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall
+svn export https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall
 
 # Add luci-app-ssr-plus
-# git clone --depth=1 https://github.com/fw876/helloworld
+git clone --depth=1 https://github.com/fw876/helloworld
 # git clone --depth=1 https://github.com/DHDAXCW/helloworld
 
 # Add luci-app-unblockneteasemusic
@@ -144,7 +143,7 @@ popd
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # Modify default IP
-sed -i 's/192.168.1.1/192.168.11.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
 
 # 删除定时coremark
 rm -rf ./customfeeds/packages/utils/coremark
