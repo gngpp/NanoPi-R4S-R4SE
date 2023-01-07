@@ -29,17 +29,22 @@ pushd package/community
 git clone --depth=1 https://github.com/Lienol/openwrt-package
 rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
+rm -rf openwrt-package/luci-app-control-timewol
+rm -rf openwrt-package/luci-app-control-webrestriction
+rm -rf openwrt-package/luci-app-control-weburl
+
 
 # Add luci-app-adguardhome
 svn export https://github.com/DHDAXCW/openwrt-packages/trunk/luci-app-adguardhome
 
 # Add luci-app-passwall
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
+# Add luci-app-ssr-plus
+git clone --depth=1 https://github.com/sbwml/openwrt_helloworld
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2
-svn export https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall
+# svn export https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall
 
 # Add luci-app-ssr-plus
-git clone --depth=1 https://github.com/fw876/helloworld
+# git clone --depth=1 https://github.com/fw876/helloworld
 # git clone --depth=1 https://github.com/DHDAXCW/helloworld
 
 # Add luci-app-unblockneteasemusic
