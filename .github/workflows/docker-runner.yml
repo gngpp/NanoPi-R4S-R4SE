@@ -87,12 +87,12 @@ jobs:
       run: |
         cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
-        make tools/compile -j2
-        make toolchain/compile -j2
-        make target/compile -j2
+        make tools/compile -j1 V=s
+        make toolchain/compile -j1 V=s
+        make target/compile -j1 V=s
         make diffconfig
-        make package/compile -j2
-        make package/index
+        make package/compile -j1 V=s
+        make package/index V=s
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
         echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
