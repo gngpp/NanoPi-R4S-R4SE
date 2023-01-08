@@ -28,7 +28,7 @@ env:
 jobs:
   Build:
     runs-on: self-hosted
-    timeout-minutes: 720
+    timeout-minutes: 1420
     defaults:
       run:
         shell: zsh
@@ -82,7 +82,7 @@ jobs:
       run: |
         cd $OPENWRTROOT
         cat .config
-        make download -j8
+        make download -j8 V=s
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
   
@@ -92,11 +92,11 @@ jobs:
         cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
         export FORCE_UNSAFE_CONFIGURE=1
-        make tools/compile -j1 V=s
-        make toolchain/compile -j1 V=s
-        make target/compile -j1 V=s
+        make tools/compile -j2 V=s
+        make toolchain/compile -j5 V=s
+        make target/compile -j10 V=s
         make diffconfig
-        make package/compile -j1 V=s
+        make package/compile -j5 V=s
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
