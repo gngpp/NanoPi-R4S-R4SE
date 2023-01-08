@@ -29,9 +29,7 @@ jobs:
   Build:
     runs-on: self-hosted
     timeout-minutes: 1440
-    defaults:
-      run:
-        shell: zsh
+
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
