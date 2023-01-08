@@ -28,7 +28,7 @@ env:
 jobs:
   Build:
     runs-on: self-hosted
-    timeout-minutes: 1420
+    timeout-minutes: 1440
     defaults:
       run:
         shell: zsh
