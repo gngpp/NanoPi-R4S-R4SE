@@ -92,7 +92,7 @@ jobs:
         make target/compile -j1 V=s
         make diffconfig
         make package/compile -j1 V=s
-        make package/index V=s
+        make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
         echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
