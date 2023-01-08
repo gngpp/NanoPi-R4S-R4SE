@@ -28,7 +28,7 @@ env:
 jobs:
   Build:
     runs-on: ubuntu-20.04
-    timeout-minutes: 480
+    timeout-minutes: 720
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
