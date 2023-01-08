@@ -94,7 +94,7 @@ jobs:
         make toolchain/compile -j5
         make target/compile -j10
         make diffconfig
-        make package/compile -j5 V=s
+        make package/compile -j2
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
