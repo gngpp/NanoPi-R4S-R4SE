@@ -21,5 +21,6 @@ git clone https://github.com/zsh-users/zsh-completions ./.oh-my-zsh/custom/plugi
 
 # Get .zshrc dotfile
 cp $GITHUB_WORKSPACE/scripts/.zshrc .
+cp $GITHUB_WORKSPACE/scripts/update.sh .
 
 popd
