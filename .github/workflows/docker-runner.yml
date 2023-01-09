@@ -91,10 +91,10 @@ jobs:
         echo -e "$(nproc) thread compile"
         export FORCE_UNSAFE_CONFIGURE=1
         make tools/compile -j1
-        make toolchain/compile -j5
+        make toolchain/compile -j0
         make target/compile -j10
         make diffconfig
-        make package/compile -j2
+        make package/compile -j0
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
