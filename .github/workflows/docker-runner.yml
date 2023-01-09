@@ -90,7 +90,7 @@ jobs:
         cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
         export FORCE_UNSAFE_CONFIGURE=1
-        make tools/compile -j10
+        make tools/compile -j5
         make toolchain/compile -j0
         make target/compile -j10
         make diffconfig
