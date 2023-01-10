@@ -153,9 +153,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Create OpenWrt Directory
-      run: mkdir -p openwrt
-
     - name: Set time zone
       run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
