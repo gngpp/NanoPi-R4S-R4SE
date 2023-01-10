@@ -81,7 +81,9 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
     - name: Downloads Compression
-      run: tar -czvf openwrt.tar.gz ./openwrt
+      run: |
+        tar -czvf openwrt.tar.gz ./openwrt
+        ls -la
 
     - uses: actions/upload-artifact@master
       with:
@@ -110,7 +112,9 @@ jobs:
         path: openwrt.tar.gz
   
     - name: Download Decompress
-      run: tar -xzvf openwrt.tar.gz
+      run: | 
+        tar -xzvf openwrt.tar.gz
+        ls -la
 
     - name: Compile Packages
       id: compile
