@@ -29,7 +29,8 @@ jobs:
 
   Download:
     runs-on: ubuntu-20.04
-
+    outputs:
+      OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -43,6 +44,8 @@ jobs:
       id: update
       run: |
         cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         mkdir customfeeds
         git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
         git clone --depth=1 https://github.com/DHDAXCW/luci customfeeds/luci
@@ -51,28 +54,32 @@ jobs:
         
     - name: Install Feeds
       run: |
+        cd $OPENWRTROOT
         ./scripts/feeds install -a
         
     - name: Load Custom Configuration
       run: |
-        mkdir files
-        mv $CONFIG_FILE .config
+        [ -e files ] && mv files $OPENWRTROOT/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRTROOT/.config
         chmod +x scripts/*.sh
+        cd $OPENWRTROOT
         ../$DIY_SH
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
         make defconfig
 
     - name: Show config
-      run: cat .config
+      run: |
+        cd $OPENWRTROOT 
+        cat .config
 
     - name: Download Package
       id: package
       run: |
+        cd $OPENWRTROOT
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-        cd ..
 
     - uses: actions/upload-artifact@master
       with:
