@@ -140,8 +140,8 @@ jobs:
 
     - uses: actions/upload-artifact@master
       with:
-        name: upload-build-init
-        path: openwrt
+        name: upload-artifact
+        path: openwrt.tar.gz
         
   Build:
     runs-on: ubuntu-20.04
@@ -186,9 +186,10 @@ jobs:
     - uses: actions/download-artifact@v3
 
     - name: Download Decompress
-      run: | 
+      run: |
+        ls -lah
+        mv ./upload-artifact/openwrt.tar.gz .
         tar -xzvf openwrt.tar.gz
-        ls -la
     
     - name: List OpenWrt Directory
       run: ls -la openwrt
