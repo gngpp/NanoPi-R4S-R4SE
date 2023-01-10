@@ -31,9 +31,9 @@ mkdir $OPENWRTROOT/files
 cp $PROJECTROOT/$CONFIG_FILE $OPENWRTROOT/.config
 chmod +x scripts/*.sh
 pushd $OPENWRTROOT
-../scripts/lean.sh
-../scripts/preset-clash-core.sh arm64
-../scripts/preset-terminal-tools.sh
+$PROJECTROOT/scripts/lean.sh
+$PROJECTROOT/scripts/preset-clash-core.sh arm64
+$PROJECTROOT/scripts/preset-terminal-tools.sh
 make defconfig
 
 #Download Package
