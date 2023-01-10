@@ -84,7 +84,6 @@ jobs:
     - name: Upload Compression
       run: |
         tar -czf openwrt.tar.gz ./openwrt
-        ls -lah
 
     - name: Display structure of upload files
       run: ls -lah
