@@ -34,19 +34,31 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Clone Lede And Packages
+    - name: Clone Source Code
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-        cd openwrt 
+
+    - name: Update Feeds
+      id: update
+      run: |
+        cd openwrt
         mkdir customfeeds
         git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
-        git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
+        git clone --depth=1 https://github.com/DHDAXCW/luci customfeeds/luci
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
+        
+    - name: Install Feeds
+      run: |
+        ./scripts/feeds install -a
+        
+    - name: Load Custom Configuration
+      run: |
         mkdir files
-        cp $CONFIG_FILE .config
-        ../scripts/lede.sh
+        mv $CONFIG_FILE .config
+        chmod +x scripts/*.sh
+        ../$DIY_SH
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
         make defconfig
@@ -87,18 +99,13 @@ jobs:
       with:
         name: upload-artifact
         path: openwrt
-
-    - name: Install Feeds
-      run: |
-        cd openwrt
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        ./scripts/feeds install -a
   
     - name: Compile Packages
       id: compile
       run: |
-        cd $OPENWRTROOT
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
         export FORCE_UNSAFE_CONFIGURE=1
         make tools/compile -j1
