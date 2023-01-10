@@ -80,11 +80,13 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+    - name: Downloads Compression
+      run: tar -czvf openwrt.tar.gz ./openwrt
 
     - uses: actions/upload-artifact@master
       with:
         name: upload-artifact
-        path: openwrt
+        path: openwrt.tar.gz
 
   Build:
     runs-on: self-hosted
@@ -105,8 +107,11 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: upload-artifact
-        path: openwrt
+        path: openwrt.tar.gz
   
+    - name: Download Decompress
+      run: tar -xzvf openwrt.tar.gz
+
     - name: Compile Packages
       id: compile
       run: |
