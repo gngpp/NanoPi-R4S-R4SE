@@ -132,7 +132,11 @@ jobs:
         make tools/compile -j$(($(nproc) + 1))
         make toolchain/compile -j$(($(nproc) + 1))
         make target/compile -j$(($(nproc) + 1))
-        cd ..
+
+    - name: Downloads Compression
+      run: |
+        tar -czvf openwrt.tar.gz ./openwrt
+        ls -la
 
     - uses: actions/upload-artifact@master
       with:
@@ -183,6 +187,12 @@ jobs:
       with:
         name: upload-build-init
         path: openwrt
+
+    - name: Download Decompress
+      run: | 
+        ls -la
+        tar -xzvf openwrt.tar.gz
+        ls -la
     
     - name: List OpenWrt Directory
       run: ls -la openwrt
