@@ -26,9 +26,50 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
+
+  Download:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Clone Lede And Packages
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        cd openwrt 
+        mkdir customfeeds
+        git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
+        git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
+        chmod +x ../scripts/*.sh
+        ../scripts/hook-feeds.sh
+        mkdir files
+        cp $CONFIG_FILE .config
+        ../scripts/lede.sh
+        ../scripts/preset-clash-core.sh arm64
+        ../scripts/preset-terminal-tools.sh
+        make defconfig
+
+    - name: Show config
+      run: cat .config
+
+    - name: Download Package
+      id: package
+      run: |
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+        cd ..
+
+    - uses: actions/upload-artifact@master
+      with:
+        name: upload-artifact
+        path: openwrt
+
   Build:
     runs-on: self-hosted
-    timeout-minutes: 1440
+    needs: [Download]
 
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
@@ -41,48 +82,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    
+    - uses: actions/download-artifact@master
+      with:
+        name: upload-artifact
+        path: openwrt
 
-    - name: Clone Source Code
-      run: |
-        df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
-        cd openwrt
-        
-    - name: Update Feeds
-      id: update
+    - name: Install Feeds
       run: |
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        mkdir customfeeds
-        git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
-        git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
-        chmod +x ../scripts/*.sh
-        ../scripts/hook-feeds.sh
-    
-    - name: Install Feeds
-      run: |
-        cd $OPENWRTROOT
         ./scripts/feeds install -a
-    - name: Load Custom Configuration
-      run: |
-        [ -e files ] && mv files $OPENWRTROOT/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRTROOT/.config
-        chmod +x scripts/*.sh
-        cd $OPENWRTROOT
-        ../$DIY_SH
-        ../scripts/preset-clash-core.sh arm64
-        ../scripts/preset-terminal-tools.sh
-        make defconfig
-
-    - name: Download Package
-      id: package
-      run: |
-        cd $OPENWRTROOT
-        cat .config
-        make download -j8
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
   
     - name: Compile Packages
       id: compile
