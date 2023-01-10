@@ -140,6 +140,7 @@ jobs:
         
   Build:
     runs-on: ubuntu-20.04
+    needs: [Build-Init]
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
