@@ -84,10 +84,10 @@ jobs:
     - name: Upload Compression
       run: |
         tar -czf openwrt.tar.gz ./openwrt
-        ls -la
+        ls -lah
 
     - name: Display structure of upload files
-      run: ls -R
+      run: ls -lah
 
     - uses: actions/upload-artifact@master
       with:
@@ -113,12 +113,13 @@ jobs:
     - uses: actions/download-artifact@v3
 
     - name: Display structure of downloaded files
-      run: ls -R
+      run: ls -lah
 
     - name: Download Decompress
       run: | 
+        mv ./upload-artifact/openwrt.tar.gz .
         tar -xzvf openwrt.tar.gz
-        ls -la
+        ls -lah
 
     - name: Compile Packages
       id: compile
