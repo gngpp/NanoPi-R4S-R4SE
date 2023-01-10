@@ -132,11 +132,12 @@ jobs:
         make tools/compile -j$(($(nproc) + 1))
         make toolchain/compile -j$(($(nproc) + 1))
         make target/compile -j$(($(nproc) + 1))
+        cd ..
 
     - uses: actions/upload-artifact@master
       with:
         name: upload-build-init
-        path: $OPENWRTROOT
+        path: openwrt
         
   Build:
     runs-on: ubuntu-20.04
