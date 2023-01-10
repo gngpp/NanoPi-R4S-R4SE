@@ -83,8 +83,9 @@ jobs:
     
     - name: Upload Compression
       run: |
-        tar -czvf openwrt.tar.gz ./openwrt
+        tar -czf openwrt.tar.gz ./openwrt
         ls -la
+
     - name: Display structure of upload files
       run: ls -R
 
@@ -109,7 +110,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
 
     - name: Display structure of downloaded files
       run: ls -R
