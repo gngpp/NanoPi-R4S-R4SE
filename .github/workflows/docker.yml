@@ -135,7 +135,7 @@ jobs:
 
     - name: Downloads Compression
       run: |
-        tar -czvf openwrt.tar.gz ./openwrt
+        tar -czf openwrt.tar.gz ./openwrt
         ls -la
 
     - uses: actions/upload-artifact@master
@@ -183,14 +183,10 @@ jobs:
         [ -n "$AGENT_TOOLSDIRECTORY" ] && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         df -h
     
-    - uses: actions/download-artifact@master
-      with:
-        name: upload-build-init
-        path: openwrt
+    - uses: actions/download-artifact@v3
 
     - name: Download Decompress
       run: | 
-        ls -la
         tar -xzvf openwrt.tar.gz
         ls -la
     
