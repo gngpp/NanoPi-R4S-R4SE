@@ -11,17 +11,19 @@ OPENWRTROOT=$(pwd)
 echo "OPENWRTROOT=$OPENWRTROOT"
 
 #Update Feeds
-echo "-------------------------------------------[Update Feeds]-------------------------------------------"
+echo "-------------------------------------------[Clone Packages]-------------------------------------------"
 mkdir customfeeds
 git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
 git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
 chmod +x ../scripts/*.sh
 ../scripts/hook-feeds.sh
+../scripts/feeds_settings.sh
 
 pushd $OPENWRTROOT
 
 #Install Feeds
-echo "-------------------------------------------[Update Feeds]-------------------------------------------"
+echo "-------------------------------------------[Update And Install Feeds]-------------------------------------------"
+./scripts/feeds update -a
 ./scripts/feeds install -a
 
 

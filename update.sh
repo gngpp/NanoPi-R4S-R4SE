@@ -11,7 +11,9 @@ rm -rf ./customfeeds
 mkdir customfeeds
 git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
 git clone --depth=1 https://github.com/DHDAXCW/luci customfeeds/luci
-chmod +x $ROOT/scripts/*.sh && $ROOT/scripts/hook-feeds.sh
+chmod +x $ROOT/scripts/*.sh
+$ROOT/scripts/hook-feeds.sh
+$ROOT/scripts/feeds_settings.sh
 #delete cache
 ./scripts/feeds update -a && ./scripts/feeds install -a
 
