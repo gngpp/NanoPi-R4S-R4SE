@@ -83,15 +83,24 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
     
+    - name: Uoloads DLL Compression
+      run: |
+        cd $OPENWRTROOT
+        tar -czvf dl.tar.gz ./dl
+        mv ./dl.tar.gz ..
+        ls -lah
+
     - name: Uoloads Compression
       run: |
         tar -czvf openwrt.tar.gz ./openwrt
         ls -lah
 
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v3
       with:
         name: upload-artifact
-        path: openwrt.tar.gz
+        path: |
+          dl.tar.gz
+          openwrt.tar.gz
 
   Build:
     runs-on: self-hosted

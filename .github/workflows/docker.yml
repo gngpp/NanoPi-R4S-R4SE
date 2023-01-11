@@ -138,7 +138,7 @@ jobs:
         tar -czf openwrt.tar.gz ./openwrt
         ls -la
 
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v3
       with:
         name: upload-artifact
         path: openwrt.tar.gz
