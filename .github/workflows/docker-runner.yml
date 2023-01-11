@@ -52,17 +52,11 @@ jobs:
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
   
-    - name: Feeds Settings
+    - name: Update And install Feeds
       run: | 
         cd $OPENWRTROOT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
-
-    - name: Update And install Feeds
-      run: | 
-        cd $OPENWRTROOT
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
         
     - name: Load Custom Configuration
       run: |
@@ -130,6 +124,7 @@ jobs:
     - name: Update And install Feeds
       run: | 
         cd $OPENWRTROOT
+        
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         make defconfig

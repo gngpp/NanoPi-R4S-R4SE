@@ -99,10 +99,11 @@ jobs:
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
     
-    - name: Install Feeds
-      run: |
+    - name: Update And install Feeds
+      run: | 
         cd $OPENWRTROOT
-        ./scripts/feeds install -a
+        chmod +x ../scripts/*.sh
+        ../scripts/feeds_settings.sh
   
     - name: Load Custom Configuration
       run: |
