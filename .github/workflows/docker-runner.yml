@@ -52,11 +52,6 @@ jobs:
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
         
-    - name: Install Feeds
-      run: |
-        cd $OPENWRTROOT
-        ./scripts/feeds install -a
-        
     - name: Load Custom Configuration
       run: |
         [ -e files ] && mv files $OPENWRTROOT/files
@@ -66,12 +61,6 @@ jobs:
         ../$DIY_SH
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
-        make defconfig
-
-    - name: Show config
-      run: |
-        cd $OPENWRTROOT 
-        cat .config
 
     - name: Download Package
       id: package
@@ -81,12 +70,10 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
     
-    - name: Upload Compression
+    - name: Downloads Compression
       run: |
-        tar -czf openwrt.tar.gz ./openwrt
-
-    - name: Display structure of upload files
-      run: ls -lah
+        tar -czvf openwrt.tar.gz ./openwrt
+        ls -lah
 
     - uses: actions/upload-artifact@master
       with:
@@ -109,23 +96,40 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     
-    - uses: actions/download-artifact@v3
-
-    - name: Display structure of downloaded files
-      run: ls -lah
-
+    - uses: actions/download-artifact@master
+      with:
+        name: upload-artifact
+        path: openwrt.tar.gz
+  
     - name: Download Decompress
       run: | 
-        mv ./upload-artifact/openwrt.tar.gz .
+        la -la
         tar -xzvf openwrt.tar.gz
-        ls -lah
+    
+    - name: Feeds Settings
+      run: | 
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        chmod +x ../scripts/*.sh
+        ../scripts/feeds_settings.sh
+
+    - name: Update And install Feeds
+      run: | 
+        cd $OPENWRTROOT
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+        make defconfig
+
+    - name: Show config
+      run: |
+        cd $OPENWRTROOT
+        cat .config
 
     - name: Compile Packages
       id: compile
       run: |
-        cd openwrt
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
         export FORCE_UNSAFE_CONFIGURE=1
         make tools/compile -j1
@@ -198,11 +202,8 @@ jobs:
           echo "release_tag=$(date +"%Y.%m.%d")-Lean1" >> $GITHUB_OUTPUT
           echo "release_date=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
           touch release.txt
-          echo "后台地址：192.168.11.1
-                full   = 全插件
-                docker = 带docker
-                slim   = 精简版
-                beggar = 乞丐版" >> release.txt
+          echo "后台地址：192.168.2.1
+                docker = 带docker" >> release.txt
           echo "status=success" >> $GITHUB_OUTPUT
           
     - name: Upload firmware to release
