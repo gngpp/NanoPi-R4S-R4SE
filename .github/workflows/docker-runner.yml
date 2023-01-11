@@ -85,7 +85,7 @@ jobs:
 
     - name: Uoloads Compression
       run: |
-        tar -czvf openwrt.tar.gz ./openwrt
+        tar -czf openwrt.tar.gz ./openwrt
         ls -lah
 
     - uses: actions/upload-artifact@v3
