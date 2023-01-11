@@ -82,13 +82,6 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-    
-    - name: Uoloads DLL Compression
-      run: |
-        cd $OPENWRTROOT
-        tar -czvf dl.tar.gz ./dl
-        mv ./dl.tar.gz ..
-        ls -lah
 
     - name: Uoloads Compression
       run: |
@@ -98,9 +91,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: upload-artifact
-        path: |
-          dl.tar.gz
-          openwrt.tar.gz
+        path: openwrt.tar.gz
 
   Build:
     runs-on: self-hosted
@@ -119,9 +110,6 @@ jobs:
       uses: actions/checkout@v3
     
     - uses: actions/download-artifact@v3
-      with:
-        name: upload-artifact
-        path: openwrt.tar.gz
   
     - name: Download Decompress
       run: | 
