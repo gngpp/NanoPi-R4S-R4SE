@@ -133,7 +133,7 @@ jobs:
         make toolchain/compile -j$(($(nproc) + 1))
         make target/compile -j$(($(nproc) + 1))
 
-    - name: Downloads Compression
+    - name: Uploads Compression
       run: |
         tar -czf openwrt.tar.gz ./openwrt
         ls -la

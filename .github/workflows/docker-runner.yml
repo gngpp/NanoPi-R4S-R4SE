@@ -109,7 +109,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v3
       with:
         name: upload-artifact
         path: openwrt.tar.gz
