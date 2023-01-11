@@ -116,7 +116,7 @@ jobs:
   
     - name: Download Decompress
       run: | 
-        la -la
+        ls -lahR
         tar -xzvf openwrt.tar.gz
     
     - name: Feeds Settings
