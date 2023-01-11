@@ -120,13 +120,6 @@ jobs:
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
-
-    - name: Update And install Feeds
-      run: | 
-        cd $OPENWRTROOT
-        
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
         make defconfig
 
     - name: Show config
