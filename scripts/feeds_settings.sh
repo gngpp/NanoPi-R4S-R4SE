@@ -13,3 +13,4 @@ echo "src-link packages $packages_feed" >> feeds.conf.default
 sed -i '/src-git luci/d' feeds.conf.default
 sed -i '/src-link luci/d' feeds.conf.default 
 echo "src-link luci $luci_feed" >> feeds.conf.default
+cat feeds.conf.default
