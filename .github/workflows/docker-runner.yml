@@ -40,7 +40,7 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
 
-    - name: Update Feeds
+    - name: Clone Custom Feeds
       id: update
       run: |
         cd openwrt
