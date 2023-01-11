@@ -54,7 +54,7 @@ jobs:
   
     - name: Feeds Settings
       run: | 
-        cd OPENWRTROOT
+        cd $OPENWRTROOT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
 
