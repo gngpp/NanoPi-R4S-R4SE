@@ -153,8 +153,8 @@ rm -rf ./customfeeds/packages/utils/coremark
 svn export https://github.com/DHDAXCW/packages/trunk/utils/coremark customfeeds/packages/utils/coremark
 
 # 风扇脚本
-wget -P target/linux/rockchip/armv8/base-files/etc/init.d/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/etc/init.d/fa-rk3399-pwmfan
-wget -P target/linux/rockchip/armv8/base-files/usr/bin/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/usr/bin/start-rk3399-pwm-fan.sh
+cp ../scripts/fa-rk3399-pwmfan target/linux/rockchip/armv8/base-files/etc/init.d/
+cp ../scripts/start-rk3399-pwm-fan.sh target/linux/rockchip/armv8/base-files/usr/bin/
 
 # Test kernel 5.15
 # sed -i 's/5.4/6.0/g' ./target/linux/rockchip/Makefile

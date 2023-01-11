@@ -21,7 +21,7 @@ chmod +x ../scripts/*.sh
 
 pushd $OPENWRTROOT
 
-#Install Feeds
+#Install Feedss
 echo "-------------------------------------------[Update And Install Feeds]-------------------------------------------"
 ./scripts/feeds update -a
 ./scripts/feeds install -a
