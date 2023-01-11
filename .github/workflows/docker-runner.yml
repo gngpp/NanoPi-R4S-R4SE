@@ -63,7 +63,6 @@ jobs:
         cd $OPENWRTROOT
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        make defconfig
         
     - name: Load Custom Configuration
       run: |
@@ -74,6 +73,7 @@ jobs:
         ../$DIY_SH
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
+        make defconfig
 
     - name: Download DLL
       id: package
