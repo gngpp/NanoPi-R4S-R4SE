@@ -51,6 +51,19 @@ jobs:
         git clone --depth=1 https://github.com/DHDAXCW/luci customfeeds/luci
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
+  
+    - name: Feeds Settings
+      run: | 
+        cd OPENWRTROOT
+        chmod +x ../scripts/*.sh
+        ../scripts/feeds_settings.sh
+
+    - name: Update And install Feeds
+      run: | 
+        cd $OPENWRTROOT
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+        make defconfig
         
     - name: Load Custom Configuration
       run: |
@@ -62,7 +75,7 @@ jobs:
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
 
-    - name: Download Package
+    - name: Download DLL
       id: package
       run: |
         cd $OPENWRTROOT
