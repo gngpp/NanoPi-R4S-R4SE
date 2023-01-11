@@ -187,8 +187,10 @@ jobs:
 
     - name: Download Decompress
       run: |
-        ls -lah
+        ls -lahR
+        mv ./upload-artifact/openwrt.tar.gz .
         tar -xzf openwrt.tar.gz
+        rm openwrt.tar.gz
 
     - name: Compile Packages
       id: compile

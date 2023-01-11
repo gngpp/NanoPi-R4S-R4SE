@@ -112,9 +112,11 @@ jobs:
     - uses: actions/download-artifact@v3
   
     - name: Download Decompress
-      run: | 
-        ls -lah
+      run: |
+        ls -lahR
+        mv ./upload-artifact/openwrt.tar.gz .
         tar -xzf openwrt.tar.gz
+        rm openwrt.tar.gz
     
     - name: Feeds Settings
       run: | 
@@ -188,8 +190,8 @@ jobs:
         fi
         cp files/etc/opkg/distfeeds.conf.server files/etc/opkg/distfeeds.conf.mirror
         sed -i "s/http:\/\/192.168.123.100:2345\/snapshots/https:\/\/openwrt.cc\/snapshots\/$(date +"%Y-%m-%d")\/lean/g" files/etc/opkg/distfeeds.conf.mirror
-        make package/install -j1 V=s
-        target/install -j1 V=s
+        make package/install -j$(nproc) || make package/install -j1 V=s
+        make target/install -j$(nproc) || make target/install -j1 V=s
         pushd bin/targets/rockchip/armv8
         rm -rf openwrt-rockchip-armv8.manifest
         rm -rf openwrt-rockchip-armv8-rootfs.tar.gz
@@ -229,8 +231,8 @@ jobs:
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
-          retain_days: 1
-          keep_minimum_runs: 1
+        retain_days: 1
+        keep_minimum_runs: 1
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
