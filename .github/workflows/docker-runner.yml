@@ -131,12 +131,11 @@ jobs:
       run: |
         cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
-        export FORCE_UNSAFE_CONFIGURE=1
-        make tools/compile -j1
-        make toolchain/compile -j1
-        make target/compile -j10
+        make tools/compile -j$(nproc)
+        make toolchain/compile -j$(nproc)
+        make target/compile -j$(nproc)
         make diffconfig
-        make package/compile -j0
+        make package/compile -j$(nproc)
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
