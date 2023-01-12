@@ -97,6 +97,7 @@ jobs:
 
   Build:
     runs-on: self-hosted
+    timeout-minutes: 1440
     needs: [Download]
 
     outputs:
