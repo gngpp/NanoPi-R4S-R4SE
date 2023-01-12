@@ -6,7 +6,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: NanoPi-R4S-容器-runner
+name: NanoPi-R4S-docker-runner
 
 on:
   repository_dispatch:
@@ -34,6 +34,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
 
     - name: Clone Source Code
       run: |
@@ -77,15 +83,17 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Uoloads Compression
-      run: |
-        tar -czf openwrt.tar.gz ./openwrt
-        ls -lah
-
-    - uses: actions/upload-artifact@v3
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
       with:
-        name: upload-artifact
-        path: openwrt.tar.gz
+        context: ./
+        file: ./Dockerfile
+        push: true
+        tags: gngpp/action-r4se-docker-cache:latest
+        
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
 
   Build:
     runs-on: self-hosted
@@ -102,16 +110,25 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    
-    - uses: actions/download-artifact@v3
   
-    - name: Download Decompress
+    - name: Pull
+      run: docker pull gngpp/action-r4se-docker-cache:latest
+      
+    - name: Create Container
+      run: docker create --name openwrt gngpp/action-r4se-docker-cache:latest 
+    
+    - name: Copy
       run: |
-        ls -lah ./upload-artifact
-        mv ./upload-artifact/openwrt.tar.gz .
-        tar -xzf openwrt.tar.gz
-        rm openwrt.tar.gz
-        ls -lah
+        docker cp openwrt:/openwrt ./openwrt
+        ls -alh ./openwrt
+    
+    - name: Clean
+      run: |
+        docker rm openwrt
+        docker rmi gngpp/action-r4se-docker-cache:latest
+    
+    - name: Show Files
+      run: ls -lah
     
     - name: Clean
       run: |
