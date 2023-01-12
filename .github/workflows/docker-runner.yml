@@ -131,9 +131,11 @@ jobs:
       id: compile
       run: |
         cd $OPENWRTROOT
+        make clean
+        rm -rf ./tmp && rm -rf ./build_dir
         echo -e "$(nproc) thread compile"
-        make tools/compile -j1
-        make toolchain/compile -j1
+        make tools/compile -j$(nproc)
+        make toolchain/compile -j$(nproc)
         make target/compile -j$(nproc)
         make diffconfig
         make package/compile -j$(nproc) IGNORE_ERRORS=1
