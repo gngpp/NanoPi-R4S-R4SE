@@ -1,4 +1,4 @@
-name: dl-cache
+name: dl
 
 on:
   repository_dispatch:
