@@ -113,11 +113,17 @@ jobs:
         rm openwrt.tar.gz
         ls -lah
     
-    - name: Feeds Settings
-      run: | 
+    - name: Clean
+      run: |
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        make clean
+        rm -rf ./tmp && rm -rf ./build_dir
+    
+    - name: Feeds Settings
+      run: | 
+        cd $OPENWRTROOT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
@@ -131,8 +137,6 @@ jobs:
       id: compile
       run: |
         cd $OPENWRTROOT
-        make clean
-        rm -rf ./tmp && rm -rf ./build_dir
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
