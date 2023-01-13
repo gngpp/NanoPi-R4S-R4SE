@@ -90,7 +90,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: gngpp/action-r4se-docker-cache:latest
+        tags: gngpp/action-openwrt-cache:r4se_docker
         
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
@@ -113,10 +113,10 @@ jobs:
       uses: actions/checkout@v3
   
     - name: Pull
-      run: docker pull gngpp/action-r4se-docker-cache:latest
+      run: docker pull gngpp/action-openwrt-cache:r4se_docker
       
     - name: Create Container
-      run: docker create --name openwrt gngpp/action-r4se-docker-cache:latest 
+      run: docker create --name openwrt gngpp/action-openwrt-cache:r4se_docker
     
     - name: Copy Files
       run: |
