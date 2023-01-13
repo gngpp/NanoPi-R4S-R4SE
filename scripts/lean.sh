@@ -158,5 +158,7 @@ mkdir -p target/linux/rockchip/armv8/base-files/usr/bin/
 cp -r ../scripts/fa-rk3399-pwmfan target/linux/rockchip/armv8/base-files/etc/init.d/
 cp -r ../scripts/start-rk3399-pwm-fan.sh target/linux/rockchip/armv8/base-files/usr/bin/
 
+# usb wifi init
+svn export https://github.com/coolsnowwolf/lede/trunk/target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb/
 # Test kernel 5.15
 # sed -i 's/5.4/6.0/g' ./target/linux/rockchip/Makefile
