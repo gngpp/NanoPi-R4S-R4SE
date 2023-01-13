@@ -36,7 +36,8 @@ rm -rf openwrt-package/luci-app-control-weburl
 
 
 # Add luci-app-adguardhome
-svn export https://github.com/DHDAXCW/openwrt-packages/trunk/luci-app-adguardhome
+# svn export https://github.com/DHDAXCW/openwrt-packages/trunk/luci-app-adguardhome
+svn co https://github.com/Lienol/openwrt-package/branches/other/luci-app-adguardhome
 
 # Add luci-app-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
@@ -153,10 +154,14 @@ rm -rf ./customfeeds/packages/utils/coremark
 svn export https://github.com/DHDAXCW/packages/trunk/utils/coremark customfeeds/packages/utils/coremark
 
 # 风扇脚本
-mkdir -p target/linux/rockchip/armv8/base-files/etc/init.d/
-mkdir -p target/linux/rockchip/armv8/base-files/usr/bin/
-cp -r ../scripts/fa-rk3399-pwmfan target/linux/rockchip/armv8/base-files/etc/init.d/
-cp -r ../scripts/start-rk3399-pwm-fan.sh target/linux/rockchip/armv8/base-files/usr/bin/
+# mkdir -p target/linux/rockchip/armv8/base-files/etc/init.d/
+# mkdir -p target/linux/rockchip/armv8/base-files/usr/bin/
+# cp -r ../scripts/fa-rk3399-pwmfan target/linux/rockchip/armv8/base-files/etc/init.d/
+# cp -r ../scripts/start-rk3399-pwm-fan.sh target/linux/rockchip/armv8/base-files/usr/bin/
+
+# 风扇脚本
+wget -P target/linux/rockchip/armv8/base-files/etc/init.d/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/etc/init.d/fa-rk3399-pwmfan
+wget -P target/linux/rockchip/armv8/base-files/usr/bin/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/usr/bin/start-rk3399-pwm-fan.sh
 
 # usb wifi init
 svn export https://github.com/coolsnowwolf/lede/trunk/target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb/
