@@ -1,4 +1,4 @@
-name: dl
+name: dl-docker
 
 on:
   repository_dispatch:
