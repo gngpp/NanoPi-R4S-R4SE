@@ -1,4 +1,4 @@
-name: NanoPi-R4S-docker-build
+name: build-docker
 
 on:
   repository_dispatch:
