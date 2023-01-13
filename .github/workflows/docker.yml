@@ -6,7 +6,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: NanoPi-R4S-容器
+name: NanoPi-R4S-R4SE-docker
 
 on:
   repository_dispatch:
@@ -26,68 +26,26 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
-  Build-Init:
+
+  Download:
     runs-on: ubuntu-20.04
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
-      PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
-      TARGET: ${{ steps.compile.outputs.TARGET }}
-      SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
-      FIRMWARE: ${{ steps.compile.outputs.FIRMWARE }}
-      GENERATE_STATUS: ${{ steps.generate.outputs.GENERATE_STATUS }}
-
     steps:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Set time zone
-      run: sudo timedatectl set-timezone 'Asia/Shanghai'
-
-    - name: Show system
-      run: |
-        lscpu
-        free -h
-        uname -a
-        df -h
-
-    - name: Free disk space
-      run: |
-        sudo -E swapoff -a
-        sudo -E rm -f /swapfile
-        sudo -E docker image prune -a -f
-        sudo -E systemctl stop docker
-        sudo -E snap set system refresh.retain=2
-        sudo -E apt-get -y purge dotnet* firefox clang* gcc-10* ghc* google* hhvm llvm* mono* mongo* mysql* openjdk* php* zulu*
-        sudo -E apt-get -y autoremove --purge
-        sudo -E apt-get clean
-        sudo -E rm -rf /etc/mysql /etc/php /usr/lib/jvm /usr/libexec/docker /usr/local /usr/src/* /var/lib/docker /var/lib/gems /var/lib/mysql /var/lib/snapd /etc/skel /opt/{microsoft,az,hostedtoolcache,cni,mssql-tools,pipx} /usr/share/{az*,dotnet,swift,miniconda,gradle*,java,kotlinc,ri,sbt} /root/{.sbt,.local,.npm}
-        sudo sed -i '/NVM_DIR/d;/skel/d' /root/{.bashrc,.profile}
-        rm -rf ~/{.cargo,.dotnet,.rustup}
-        [ -n "$AGENT_TOOLSDIRECTORY" ] && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-        df -h
-
-    - name: Init build dependencies
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        sudo -E rm -rf /etc/apt/sources.list.d
-        sudo -E apt-get update -y
-        sudo -E apt-get install -y build-essential rsync asciidoc binutils bzip2 gawk gettext git libfuse-dev libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core p7zip p7zip-full msmtp texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx-ucl libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python3 python3-pip python3-ply haveged lrzsz device-tree-compiler scons android-sdk-libsparse-utils android-sdk-ext4-utils proxychains-ng
-        echo "deb http://archive.ubuntu.com/ubuntu/ bionic-security main" | sudo tee -a /etc/apt/sources.list
-        sudo -E apt-get update
-        sudo -E apt-cache policy libssl1.0-dev
-        sudo -E apt-get install -y libssl1.0-dev kmod
-        sudo -E apt-get clean -y
-        git config --global user.name 'GitHub Actions' && git config --global user.email 'noreply@github.com'
-        df -h
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
 
     - name: Clone Source Code
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-        cd openwrt
-        
-    - name: Update Feeds
+    - name: Clone Custom Feeds
       id: update
       run: |
         cd openwrt
@@ -98,13 +56,13 @@ jobs:
         git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
-    
+  
     - name: Update And install Feeds
       run: | 
         cd $OPENWRTROOT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
-  
+        
     - name: Load Custom Configuration
       run: |
         [ -e files ] && mv files $OPENWRTROOT/files
@@ -115,38 +73,30 @@ jobs:
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
         make defconfig
-
-    - name: Download Package
+    - name: Download DLL
       id: package
       run: |
         cd $OPENWRTROOT
-        cat .config
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-
-    - name: Compile Tools
-      id: compile
-      run: |
-        cd $OPENWRTROOT
-        echo -e "$(nproc) thread compile"
-        make tools/compile -j$(($(nproc) + 1))
-        make toolchain/compile -j$(($(nproc) + 1))
-        make target/compile -j$(($(nproc) + 1))
-
-    - name: Uploads Compression
-      run: |
-        tar -czf openwrt.tar.gz ./openwrt
-        ls -la
-
-    - uses: actions/upload-artifact@v3
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
       with:
-        name: upload-artifact
-        path: openwrt.tar.gz
+        context: ./
+        file: ./Dockerfile
+        push: true
+        tags: gngpp/action-openwrt-cache:r4se_docker
         
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
+
   Build:
-    runs-on: ubuntu-20.04
-    needs: [Build-Init]
+    runs-on: self-hosted
+    timeout-minutes: 1440
+    needs: [Download]
+
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
@@ -154,54 +104,54 @@ jobs:
       SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
       FIRMWARE: ${{ steps.compile.outputs.FIRMWARE }}
       GENERATE_STATUS: ${{ steps.generate.outputs.GENERATE_STATUS }}
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-
-    - name: Set time zone
-      run: sudo timedatectl set-timezone 'Asia/Shanghai'
-
-    - name: Show system
-      run: |
-        lscpu
-        free -h
-        uname -a
-        df -h
-
-    - name: Free disk space
-      run: |
-        sudo -E swapoff -a
-        sudo -E rm -f /swapfile
-        sudo -E docker image prune -a -f
-        sudo -E systemctl stop docker
-        sudo -E snap set system refresh.retain=2
-        sudo -E apt-get -y purge dotnet* firefox clang* gcc-10* ghc* google* hhvm llvm* mono* mongo* mysql* openjdk* php* zulu*
-        sudo -E apt-get -y autoremove --purge
-        sudo -E apt-get clean
-        sudo -E rm -rf /etc/mysql /etc/php /usr/lib/jvm /usr/libexec/docker /usr/local /usr/src/* /var/lib/docker /var/lib/gems /var/lib/mysql /var/lib/snapd /etc/skel /opt/{microsoft,az,hostedtoolcache,cni,mssql-tools,pipx} /usr/share/{az*,dotnet,swift,miniconda,gradle*,java,kotlinc,ri,sbt} /root/{.sbt,.local,.npm}
-        sudo sed -i '/NVM_DIR/d;/skel/d' /root/{.bashrc,.profile}
-        rm -rf ~/{.cargo,.dotnet,.rustup}
-        [ -n "$AGENT_TOOLSDIRECTORY" ] && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-        df -h
+  
+    - name: Pull
+      run: docker pull gngpp/action-openwrt-cache:r4se_docker
+      
+    - name: Create Container
+      run: docker create --name openwrt gngpp/action-openwrt-cache:r4se_docker
     
-    - uses: actions/download-artifact@v3
-
-    - name: Download Decompress
+    - name: Copy Files
       run: |
-        ls -lahR
-        mv ./upload-artifact/openwrt.tar.gz .
-        tar -xzf openwrt.tar.gz
-        rm openwrt.tar.gz
-
-    - name: Compile Packages
-      id: compile
-      run: |
+        docker cp openwrt:/openwrt ./openwrt
+        ls -alh ./openwrt
+    
+    - name: Remove Container
+      run: docker rm openwrt
+      
+    - name: Show Files
+      run: ls -lah
+    
+    - name: Feeds Settings
+      run: | 
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        chmod +x ../scripts/*.sh
+        ../scripts/feeds_settings.sh
+        make defconfig
+    - name: Clean
+      run: |
+        cd $OPENWRTROOT
+        rm -rf ./tmp && rm -rf ./build_dir
+    - name: Show config
+      run: |
+        cd $OPENWRTROOT
+        cat .config
+    - name: Compile Packages
+      id: compile
+      run: |
+        cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
+        make tools/compile -j$(nproc)
+        make toolchain/compile -j$(nproc)
+        make target/compile -j$(nproc)
         make diffconfig
-        make package/compile -j$(($(nproc) + 1))
+        make package/compile -j$(nproc) IGNORE_ERRORS=1
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
@@ -218,7 +168,6 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "FIRMWARE=$PWD" >> $GITHUB_OUTPUT
         echo "COMPILE_STATUS=success" >> $GITHUB_OUTPUT
-
     - name: Generate Firmware
       if: steps.compile.outputs.COMPILE_STATUS == 'success'
       id: generate
@@ -244,8 +193,8 @@ jobs:
         fi
         cp files/etc/opkg/distfeeds.conf.server files/etc/opkg/distfeeds.conf.mirror
         sed -i "s/http:\/\/192.168.123.100:2345\/snapshots/https:\/\/openwrt.cc\/snapshots\/$(date +"%Y-%m-%d")\/lean/g" files/etc/opkg/distfeeds.conf.mirror
-        make package/install -j1 V=s
-        make target/install -j1 V=s
+        make package/install -j$(nproc) || make package/install -j1 V=s
+        make target/install -j$(nproc) || make target/install -j1 V=s
         pushd bin/targets/rockchip/armv8
         rm -rf openwrt-rockchip-armv8.manifest
         rm -rf openwrt-rockchip-armv8-rootfs.tar.gz
@@ -285,8 +234,8 @@ jobs:
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
-          retain_days: 1
-          keep_minimum_runs: 1
+        retain_days: 1
+        keep_minimum_runs: 1
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
