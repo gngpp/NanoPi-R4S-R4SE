@@ -16,7 +16,7 @@ env:
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  IMGAE: gngpp/action-openwrt-cache:r4se_docker
+  IMAGE: gngpp/action-openwrt-cache:r4se_docker
 
 jobs:
 
@@ -41,12 +41,12 @@ jobs:
       uses: actions/checkout@v3
   
     - name: Pull
-      run: docker pull $IMGAE
+      run: docker pull $IMAGE
     
     - name: Copy Files
       id: copy
       run: |
-        ID="$(docker create --name openwrt "$IMGAE")"
+        ID="$(docker create --name openwrt "$IMAGE")"
         docker cp $ID:/openwrt ./openwrt
         ls -alh ./openwrt
         docker rm $ID
