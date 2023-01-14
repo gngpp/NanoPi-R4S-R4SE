@@ -1,3 +1,3 @@
-FROM ubuntu:20.04
+FROM alpine:latest
 WORKDIR /openwrt
 COPY ./openwrt /openwrt
