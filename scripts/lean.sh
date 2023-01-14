@@ -7,12 +7,6 @@
 # Blog: https://mlapp.cn
 #=================================================
 
-# 防止上游更改
-rm -rf package/kernel/mac80211
-svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mac80211 package/kernel/mac80211
-rm -rf package/kernel/mt76
-svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mt76 package/kernel/mt76
-
 # Add cpufreq
 rm -rf ./feeds/luci/applications/luci-app-cpufreq 
 svn export https://github.com/DHDAXCW/luci-bt/trunk/applications/luci-app-cpufreq ./feeds/luci/applications/luci-app-cpufreq
