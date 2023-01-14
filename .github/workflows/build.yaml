@@ -41,12 +41,12 @@ jobs:
       uses: actions/checkout@v3
   
     - name: Pull
-      run: docker pull $IMAGE
+      run: docker pull $IMGAE
     
     - name: Copy Files
       id: copy
       run: |
-        ID="$(docker create --name openwrt "$IMAGE")"
+        ID="$(docker create --name openwrt "$IMGAE")"
         docker cp $ID:/openwrt ./openwrt
         ls -alh ./openwrt
         docker rm $ID
