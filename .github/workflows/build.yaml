@@ -50,7 +50,7 @@ jobs:
         docker cp $ID:/openwrt ./openwrt
         ls -alh ./openwrt
         docker rm $ID
-        docker rmi $IMAGE
+        docker rmi $IMAGE -f
       
     - name: Show Files
       run: ls -lah
