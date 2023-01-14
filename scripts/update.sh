@@ -636,7 +636,7 @@ function main(){
     auto_set_block_var
 
     # 自带的 dd 不行
-    [ ! -f /usr/libexec/dd-coreutils ] && opkg install coreutils-dd
+    # [ ! -f /usr/libexec/dd-coreutils ] && opkg update && opkg install coreutils-dd
 
     #$board_id
     update
