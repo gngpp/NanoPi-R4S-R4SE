@@ -1,4 +1,4 @@
-name: build-docker
+name: build
 
 on:
   repository_dispatch:
