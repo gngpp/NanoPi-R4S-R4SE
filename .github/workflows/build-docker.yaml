@@ -41,22 +41,20 @@ jobs:
   
     - name: Pull
       run: docker pull gngpp/action-openwrt-cache:r4se_docker
-      
-    - name: Create Container
-      run: docker create --name openwrt gngpp/action-openwrt-cache:r4se_docker
     
     - name: Copy Files
+      id: copy
       run: |
-        docker cp openwrt:/openwrt ./openwrt
+        ID=$(docker create --name openwrt gngpp/action-openwrt-cache:r4se_docker)
+        docker cp $ID:/openwrt ./openwrt
         ls -alh ./openwrt
-    
-    - name: Remove Container
-      run: docker rm openwrt
+        docker rm $ID
       
     - name: Show Files
       run: ls -lah
     
     - name: Feeds Settings
+      id: update
       run: | 
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
@@ -64,14 +62,17 @@ jobs:
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
+        
     - name: Clean
       run: |
         cd $OPENWRTROOT
         rm -rf ./tmp && rm -rf ./build_dir
+        
     - name: Show config
       run: |
         cd $OPENWRTROOT
         cat .config
+        
     - name: Compile Packages
       id: compile
       run: |
