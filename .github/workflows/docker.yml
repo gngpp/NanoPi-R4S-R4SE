@@ -24,6 +24,7 @@ env:
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
+  IMAGE: gngpp/action-openwrt-cache/r4se_docker
 
 jobs:
 
@@ -45,6 +46,7 @@ jobs:
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
+        
     - name: Clone Custom Feeds
       id: update
       run: |
@@ -114,18 +116,15 @@ jobs:
       uses: actions/checkout@v3
   
     - name: Pull
-      run: docker pull gngpp/action-openwrt-cache:r4se_docker
+      run: docker pull $IMAGE
       
-    - name: Create Container
-      run: docker create --name openwrt gngpp/action-openwrt-cache:r4se_docker
-    
     - name: Copy Files
+      id: copy
       run: |
-        docker cp openwrt:/openwrt ./openwrt
+        ID="$(docker create --name openwrt "$IMAGE")"
+        docker cp $ID:/openwrt ./openwrt
         ls -alh ./openwrt
-    
-    - name: Remove Container
-      run: docker rm openwrt
+        docker rm $ID
       
     - name: Show Files
       run: ls -lah
