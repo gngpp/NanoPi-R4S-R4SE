@@ -67,7 +67,8 @@ svn export https://github.com/linkease/nas-packages-luci/trunk/luci/luci-app-ddn
 svn export https://github.com/linkease/nas-packages/trunk/network/services/ddnsto
 
 # Add luci-app-onliner (need luci-app-nlbwmon)
-git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
+#git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
+svn export https://github.com/haiibo/openwrt-packages/trunk/luci-app-onliner
 
 # Add ServerChan
 git clone --depth=1 https://github.com/tty228/luci-app-serverchan
