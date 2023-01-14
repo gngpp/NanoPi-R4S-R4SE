@@ -24,7 +24,7 @@ env:
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  IMAGE: gngpp/action-openwrt-cache/r4se_docker
+  IMAGE: gngpp/action-openwrt-cache:r4se_docker
 
 jobs:
 
