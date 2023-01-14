@@ -126,6 +126,7 @@ jobs:
         docker cp $ID:/openwrt ./openwrt
         ls -alh ./openwrt
         docker rm $ID
+        docker rmi $IMAGE
       
     - name: Show Files
       run: ls -lah
