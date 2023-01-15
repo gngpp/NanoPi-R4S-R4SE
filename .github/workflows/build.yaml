@@ -21,7 +21,7 @@ env:
 jobs:
 
   Build:
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux, x64, 10850K]
     timeout-minutes: 1440
 
     outputs:
