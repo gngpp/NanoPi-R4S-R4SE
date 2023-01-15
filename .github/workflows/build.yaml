@@ -63,16 +63,13 @@ jobs:
         docker rmi $(docker images -q) -f
         docker images
         ls -alh ./openwrt
-
-    - name: Show Status
-      run: |
-       ls -lah
-       cd $OPENWRTROOT 
     
     - name: Feeds Settings
       id: update
       run: | 
-        cd $OPENWRTROOT
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
