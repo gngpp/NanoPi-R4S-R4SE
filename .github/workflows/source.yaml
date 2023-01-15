@@ -59,8 +59,15 @@ jobs:
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+<<<<<<< HEAD
         echo "commit version: $COMMIT_20230107"
         git reset --hard $COMMIT_20230107
+=======
+        echo $COMMIT_20230107
+        git reset --hard c17623429c5b8cd1517caee0203489aff306994f
+        rm -rf .git && git status
+        ls package/kernel/mt76
+>>>>>>> bb6787462e725824279cbb57aa3cb768360228cd
 
     - name: Clone Custom Feeds
       id: update
