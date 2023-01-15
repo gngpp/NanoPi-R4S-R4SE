@@ -24,7 +24,7 @@ env:
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  IMAGE: gngpp/action-openwrt-cache:r4se_docker
+  IMAGE: ${{ secrets.IMAGE }}
 
 jobs:
 
@@ -92,7 +92,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: $IMAGE
+        tags: ${{ secrets.IMAGE }}
         
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
