@@ -50,9 +50,17 @@ jobs:
         docker cp $ID:/openwrt ./openwrt
         docker rm $ID
         docker ps -a
-        docker rmi $IMAGE -f
+        docker rmi $(docker images -q) -f
         docker images
         ls -alh ./openwrt
+
+    - name: Reset Version
+      id: reset
+      run: |
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        git reset --hard $COMMIT_20230107
       
     - name: Show Files
       run: ls -lah
@@ -60,9 +68,7 @@ jobs:
     - name: Feeds Settings
       id: update
       run: | 
-        cd openwrt
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        cd $OPENWRTROOT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
