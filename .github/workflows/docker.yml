@@ -25,6 +25,7 @@ env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   IMAGE: ${{ secrets.IMAGE }}
+  COMMIT_20230107: ${{ vars.COMMIT_20230107 }}
 
 jobs:
 
@@ -67,16 +68,13 @@ jobs:
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        echo "commit version: $COMMIT_20230107"
         git reset --hard $COMMIT_20230107
-        rm -rf .git
-        git status
 
     - name: Clone Custom Feeds
       id: update
       run: |
         cd $OPENWRTROOT
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         mkdir customfeeds
         git clone --depth=1 https://github.com/DHDAXCW/packages customfeeds/packages
         git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
