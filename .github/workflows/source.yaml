@@ -60,6 +60,7 @@ jobs:
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         git reset --hard $COMMIT_20230107
         rm -rf .git && git status
+        ls package/kernel/mt76
 
     - name: Clone Custom Feeds
       id: update
