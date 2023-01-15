@@ -58,6 +58,7 @@ jobs:
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        echo $COMMIT_20230107
         git reset --hard c17623429c5b8cd1517caee0203489aff306994f
         rm -rf .git && git status
         ls package/kernel/mt76
