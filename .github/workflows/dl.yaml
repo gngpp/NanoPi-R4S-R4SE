@@ -84,7 +84,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: gngpp/action-openwrt-cache:r4se_docker
+        tags: $IMAGE
         
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}

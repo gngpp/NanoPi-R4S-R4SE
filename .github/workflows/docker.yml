@@ -76,6 +76,7 @@ jobs:
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
         make defconfig
+
     - name: Download DLL
       id: package
       run: |
@@ -83,6 +84,7 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
@@ -90,7 +92,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: gngpp/action-openwrt-cache:r4se_docker
+        tags: $IMAGE
         
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
