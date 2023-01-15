@@ -64,15 +64,7 @@ jobs:
         docker images
         ls -alh ./openwrt
 
-    - name: Reset Version
-      id: reset
-      run: |
-        cd openwrt
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        git reset --hard $COMMIT_20230107
-      
-    - name: Show Files
+    - name: Show Status
       run: |
        ls -lah
        cd $OPENWRTROOT 

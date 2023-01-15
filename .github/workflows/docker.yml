@@ -60,12 +60,21 @@ jobs:
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt && cd openwrt
-        git reset --hard $COMMIT_20230107
         
+    - name: Reset Version
+      id: reset
+      run: |
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        git reset --hard $COMMIT_20230107
+        rm -rf .git
+        git status
+
     - name: Clone Custom Feeds
       id: update
       run: |
-        cd openwrt
+        cd $OPENWRTROOT
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         mkdir customfeeds
@@ -156,14 +165,6 @@ jobs:
         docker images
         ls -alh ./openwrt
       
-    - name: Reset Version
-      id: reset
-      run: |
-        cd openwrt
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        git reset --hard $COMMIT_20230107
-
     - name: Show Files
       run: ls -lah
     

@@ -52,10 +52,21 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt && cd openwrt
 
+    - name: Reset Version
+      id: reset
+      run: |
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        git reset --hard $COMMIT_20230107
+        rm -rf .git && git status
+
     - name: Clone Custom Feeds
       id: update
       run: |
-        cd openwrt
+        cd $OPENWRTROOT
+        git status
+        ls package/kernel/mt76
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         mkdir customfeeds
