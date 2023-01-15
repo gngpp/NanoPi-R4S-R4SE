@@ -33,6 +33,20 @@ jobs:
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
     steps:
+  
+    - name: Initialization Environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        echo -e "Total CPU cores\t: $(nproc)"
+        cat /proc/cpuinfo | grep 'model name'
+        free -h
+        uname -a
+        [ -f /proc/version ] && cat /proc/version
+        [ -f /etc/issue.net ] && cat /etc/issue.net
+        [ -f /etc/issue ] && cat /etc/issue
+        ulimit -a
+
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -112,6 +126,19 @@ jobs:
 
     steps:
   
+    - name: Initialization Environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        echo -e "Total CPU cores\t: $(nproc)"
+        cat /proc/cpuinfo | grep 'model name'
+        free -h
+        uname -a
+        [ -f /proc/version ] && cat /proc/version
+        [ -f /etc/issue.net ] && cat /etc/issue.net
+        [ -f /etc/issue ] && cat /etc/issue
+        ulimit -a
+        
     - name: Clean Workspace
       uses: AutoModality/action-clean@v1.1.0
       
