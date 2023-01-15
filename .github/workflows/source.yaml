@@ -1,4 +1,4 @@
-name: dl
+name: source
 
 on:
   repository_dispatch:
