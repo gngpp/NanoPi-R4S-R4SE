@@ -45,7 +45,7 @@ jobs:
     - name: Clone Source Code
       run: |
         df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        git clone $REPO_URL -b $REPO_BRANCH openwrt && cd openwrt
         git reset --hard $COMMIT_20230107
         
     - name: Clone Custom Feeds
@@ -124,9 +124,11 @@ jobs:
       run: |
         ID="$(docker create --name openwrt "$IMAGE")"
         docker cp $ID:/openwrt ./openwrt
-        ls -alh ./openwrt
         docker rm $ID
-        docker rmi $IMAGE
+        docker ps -a
+        docker rmi $IMAGE -f
+        docker images
+        ls -alh ./openwrt
       
     - name: Show Files
       run: ls -lah
@@ -139,14 +141,17 @@ jobs:
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
+
     - name: Clean
       run: |
         cd $OPENWRTROOT
         rm -rf ./tmp && rm -rf ./build_dir
+
     - name: Show config
       run: |
         cd $OPENWRTROOT
         cat .config
+
     - name: Compile Packages
       id: compile
       run: |

@@ -47,9 +47,11 @@ jobs:
       run: |
         ID="$(docker create --name openwrt "$IMAGE")"
         docker cp $ID:/openwrt ./openwrt
-        ls -alh ./openwrt
         docker rm $ID
+        docker ps -a
         docker rmi $IMAGE -f
+        docker images
+        ls -alh ./openwrt
       
     - name: Show Files
       run: ls -lah
