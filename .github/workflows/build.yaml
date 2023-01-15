@@ -47,9 +47,6 @@ jobs:
         [ -f /etc/issue ] && cat /etc/issue
         ulimit -a
 
-    - name: Clean Workspace
-      uses: AutoModality/action-clean@v1.1.0
-
     - name: Checkout
       uses: actions/checkout@v3
   
