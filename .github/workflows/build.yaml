@@ -73,7 +73,10 @@ jobs:
         git reset --hard $COMMIT_20230107
       
     - name: Show Files
-      run: ls -lah
+      run: |
+       ls -lah
+       cd $OPENWRTROOT 
+       ls package/kernel/mt76
     
     - name: Feeds Settings
       id: update
