@@ -6,7 +6,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: NanoPi-R4S-R4SE-docker
+name: build-compose
 
 on:
   repository_dispatch:
