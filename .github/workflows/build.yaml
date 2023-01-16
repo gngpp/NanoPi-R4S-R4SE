@@ -66,13 +66,15 @@ jobs:
 
     - name: Clean
       run: |
-        cd $OPENWRTROOT
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         rm -rf ./tmp && rm -rf ./build_dir
     
     - name: Feeds Settings
       id: update
       run: | 
-        cd openwrt
+        cd $OPENWRTROOT
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         chmod +x ../scripts/*.sh
