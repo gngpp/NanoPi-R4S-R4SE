@@ -167,6 +167,6 @@ wget -P target/linux/rockchip/armv8/base-files/etc/init.d/ https://github.com/fr
 wget -P target/linux/rockchip/armv8/base-files/usr/bin/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/usr/bin/start-rk3399-pwm-fan.sh
 
 # usb wifi init
-svn export https://github.com/coolsnowwolf/lede/trunk/target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb/
+# svn export https://github.com/coolsnowwolf/lede/trunk/target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb/
 # Test kernel 5.15
 # sed -i 's/5.4/6.0/g' ./target/linux/rockchip/Makefile
