@@ -1,5 +1,6 @@
 #!/bin/sh
 # reference: https://github.com/zhangguanzhang/Actions-OpenWrt/blob/main/build/scripts/update.sh
+# 暂不支持在线升级
 
 set -e
 
