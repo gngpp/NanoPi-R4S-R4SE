@@ -16,7 +16,7 @@ env:
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  COMMIT_20230107: ${{ vars.COMMIT_20230107 }}
+  COMMIT: ${{ vars.COMMIT }}
 
 jobs:
 
@@ -59,8 +59,8 @@ jobs:
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        echo "commit version: $COMMIT_20230107"
-        git reset --hard $COMMIT_20230107
+        echo "commit version: $COMMIT"
+        git reset --hard $COMMIT
 
     - name: Clone Custom Feeds
       id: update
