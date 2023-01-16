@@ -39,7 +39,7 @@ rm -rf openwrt-package/luci-app-control-weburl
 
 # Add luci-app-adguardhome
 # svn export https://github.com/DHDAXCW/openwrt-packages/trunk/luci-app-adguardhome
-svn co https://github.com/Lienol/openwrt-package/branches/other/luci-app-adguardhome
+# svn co https://github.com/Lienol/openwrt-package/branches/other/luci-app-adguardhome
 
 # Add luci-app-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
