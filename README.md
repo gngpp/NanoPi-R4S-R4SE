@@ -1,13 +1,9 @@
-# 中文简体 | [English](https://github.com/DHDAXCW/NanoPi-R4S-2021/blob/main/EngLish.md) <img src="https://img.shields.io/github/downloads/DHDAXCW/NanoPi-R4S-R4SE/total.svg?style=for-the-badge&color=32C955"/>
+# 中文简体 | [English](https://github.com/gngpp/NanoPi-R4S-2021/blob/main/EngLish.md) <img src="https://img.shields.io/github/downloads/gngpp/NanoPi-R4S-R4SE/total.svg?style=for-the-badge&color=32C955"/>
 # NanoPi-R4S-R4SE
-# 机场推荐 [ENET--IEPL内网专线接入](https://www.easy2022.com/#/register?code=Ut7iWMrk)
 ## 👉使用本固件前，请严格遵守国家互联网使用相关法律规定,不要违反国家法律规定！👈
 
-### 固件分类 在[releases](https://github.com/DHDAXCW/NanoPi-R4S-2021/releases)有备注关键词
-- 正式版：全插件啥都有
-- 稳定版：日常使用插件
+### 固件分类 在[releases](https://github.com/gngpp/NanoPi-R4S-2021/releases)有备注关键词
 - docker版：全插件+docker
-- 乞丐版：只含代理，其他没有
 - 风扇链接 [点击进入](https://s.click.taobao.com/t?e=m%3D2%26s%3Dd8Ack0Lbx8McQipKwQzePOeEDrYVVa64LKpWJ%2Bin0XJRAdhuF14FMXpyNmcFd6mT8sviUM61dt2T0mcOGN1M6FAj1gqltKaEfKzCcEr0EW0YuhTK3FPxiHMT7yc3NZrQKSOkJV8harV3phaPbavinqGCwVfdcN0wcSpj5qSCmbA%3D)  建议用这种风扇
 
 ### 固件格式
@@ -18,10 +14,8 @@
 
 ### 默认编译  
 
-- 用户名：root 密码：password  管理IP：192.168.11.1
-- 下载地址：https://github.com/DHDAXCW/NanoPi-R4S-R4SE/releases
-- x86_64固件下载 https://github.com/DHDAXCW/OpenWRT_x86_x64/releases
-- 关于r4se刷机方法请参考dn2刷机 https://github.com/DHDAXCW/DoorNet2/blob/main/emmc.md
+- 用户名：root 密码：password  管理IP：192.168.2.1
+- 下载地址：https://github.com/gngpp/NanoPi-R4S-R4SE/releases
 - 电报群：https://t.me/DHDAXCW
 
 ### 该升级支持4G版，1G版
