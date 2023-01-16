@@ -70,7 +70,8 @@ jobs:
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         echo "COMMIT_ID version: $COMMIT_ID"
         git reset --hard $COMMIT_ID
-
+        rm -rf .git
+        
     - name: Clone Custom Feeds
       id: update
       run: |
