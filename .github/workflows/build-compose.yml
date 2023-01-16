@@ -163,9 +163,6 @@ jobs:
         docker images
         ls -alh ./openwrt
       
-    - name: Show Files
-      run: ls -lah
-
     - name: Clean
       run: |
         cd $OPENWRTROOT
@@ -173,7 +170,9 @@ jobs:
     
     - name: Feeds Settings
       run: | 
-        cd $OPENWRTROOT
+        cd openwrt
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
