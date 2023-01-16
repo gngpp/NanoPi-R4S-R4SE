@@ -25,7 +25,7 @@ env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   IMAGE: ${{ secrets.IMAGE }}
-  COMMIT: ${{ vars.COMMIT }}
+  COMMIT_ID: ${{ vars.COMMIT_ID }}
 
 jobs:
 
@@ -68,8 +68,8 @@ jobs:
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        echo "commit version: $COMMIT"
-        git reset --hard $COMMIT
+        echo "COMMIT_ID version: $COMMIT_ID"
+        git reset --hard $COMMIT_ID
 
     - name: Clone Custom Feeds
       id: update
