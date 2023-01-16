@@ -1,4 +1,5 @@
 #!/bin/sh
+# reference: https://github.com/zhangguanzhang/Actions-OpenWrt/blob/main/build/scripts/update.sh
 
 set -e
 
@@ -357,6 +358,7 @@ function update(){
         if [ -n "$NEED_GROW" ];then
             warning '注意：初版扩容，或者其他人固件升级到我的固件时候只备份网卡配置文件'
         fi
+        # 作为参照
         cp /etc/config/network /mnt/update/img/etc/config/network.bak
         cat /etc/config/network > /mnt/update/img/etc/config/network
     else
@@ -638,7 +640,7 @@ function main(){
     # 自带的 dd 不行
     # [ ! -f /usr/libexec/dd-coreutils ] && opkg update && opkg install coreutils-dd
 
-    #$board_id
+    $board_id
     update
 }
 
