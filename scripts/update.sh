@@ -1,6 +1,5 @@
 #!/bin/sh
 # reference: https://github.com/zhangguanzhang/Actions-OpenWrt/blob/main/build/scripts/update.sh
-# 暂不支持在线升级
 
 set -e
 
@@ -9,6 +8,7 @@ set -e
 : ${SKIP_BACK:=false} ${DEBUG:=false}
 : ${TEST:=false} # 默认使用 main 分支编译的，test分支是测试阶段
 : ${REPO:=} # lede openwrt
+: ${USER_REPO=gngpp/NanoPi-R4S-R4SE}
 
 tmp_mountpoint=/opt
 
@@ -65,7 +65,7 @@ function proceed_command() {
         if [ "$NO_NET" = true ];then
             err "检测到无法联网，并且固件没有扩容所需命令: $1"
         fi
-        opkg install --force-overwrite $install
+        opkg update && opkg install --force-overwrite $install
     fi
 	if ! command -v $1 &> /dev/null; then
         err "'$1'命令不可用，升级中止"
@@ -81,43 +81,23 @@ function init_d_stop(){
     done 
 }
 
-# TODO
-# 从 ghproxy 下载
-function registry_api_setting(){
-    local target=$1 realm service scope url
-    curl -L https://${repo_domain}/v2/${repo_namespace}/${target}/tags/list -v 2>&1 |  awk 'tolower($2)~"www-authenticate"{print $4}' | sed 's/,/\n/g' > /tmp/registr_realm
-    source /tmp/registr_realm
-    url="${realm}?service=${service}&scope=${scope}"
-    # https://stackoverflow.com/questions/35018899/using-curl-in-a-bash-script-and-getting-curl-3-illegal-characters-found-in-ur
-    url=${url%$'\r'}
-    curl -sL "${url}" > /tmp/registr_token
-    regirey_header="Authorization: Bearer `jsonfilter -e '@["token"]' < /tmp/registr_token`"
+function get_latest_release() {
+	curl --silent "https://api.github.com/repos/$1/releases/latest" |	# Get latest release from GitHub api
+	grep '"tag_name":' |												# Get tag line
+	sed -E 's/.*"([^"]+)".*/\1/'										# Pluck JSON value
 }
 
-function registry_tag_list(){
-    local target=$1 
-    [ -z "$regirey_header" ] && registry_api_setting $target
-    # curl -s  https://hub.docker.com/v2/repositories/zhangguanzhang/${$board_id}/tags/?page_size=100
-    # 阿里的仓库不支持 /tags/?page_size=100
-    curl -sL -H "${regirey_header}"  https://${repo_domain}/v2/${repo_namespace}/${target}/tags/list?page_size=100 
-}
 
-# 阿里云镜像仓库下载
-function registry_blob_download_op(){
-    # target=r2s
-    # tag=latest-squashfs-slim-lede-master
-    local target=$1 tag=$2 url blob_id
-    # https://stackoverflow.com/questions/71409458/how-to-download-docker-image-using-http-api-using-docker-hub-credentials
+function github_blob_download_op(){
+    echo -e '\e[92m开始下载: '$1'/sha256sums\e[0m'
+    url=https://ghproxy.com/https://github.com/$USER_REPO/releases/download/$1/docker-sha256sums
+    echo "link: $url"
+    curl -L $url -o /tmp/sha256sums
 
-    [ -z "$regirey_header" ] && registry_api_setting $target
-
-    curl -sL https://${repo_domain}/v2/${repo_namespace}/${target}/manifests/${tag} -H "${regirey_header}" > /tmp/registr_manifest.json
-    blob_id=$(jsonfilter -e '@["fsLayers"][0]["blobSum"]' < /tmp/registr_manifest.json)
-    info "开始从 ${docker_repo_ns} 下载包含 $target $tag 固件的 blob 数据，左下角数据是下载进度百分比"
-    # TODO
-    # 直接下载和解压
-    curl -L https://${repo_domain}/v2/${repo_namespace}/${target}/blobs/${blob_id} -H "${regirey_header}" -o ${USER_FILE}.tar.gz
-    rm -f /tmp/registr_*
+    echo -e '\e[92m开始下载: '$1/$2'\e[0m'
+    url=https://ghproxy.com/https://github.com/$USER_REPO/releases/download/$1/$2
+    echo "link: $url"
+    curl -L $url -o ${USER_FILE}
 }
 
 function r1s-h3(){
@@ -244,46 +224,22 @@ function update(){
     if [ -f "${USER_FILE}" ];then
         info "此次使用本地文件: ${USER_FILE} 来升级"
     else
+        latest_release_tag=`get_latest_release ${USER_REPO}`
+        echo -e '\e[92m准备更新到: '$latest_release_tag'\e[0m'
 
-        registry_tag_list ${board_id}  |  jsonfilter -e '@["tags"][*]' > /tmp/registr_list
+        board_id=$(cat /etc/board.json | jsonfilter -e '@["model"].id' | sed 's/friendly.*,nanopi-//;s/xunlong,orangepi-//;s/^r2$/r2s/;s/^r1s-h5$/r1s/;s/^r1$/r1s-h3/;s/^r1-plus$/r1p/;s/^r1-plus-lts$/r1p-lts/;s/default-string-default-string/x86/;s/vmware-inc-vmware7-1/x86/;s/qemu-standard-pc-q35-ich9-2009/x86/;s/qemu-standard-pc-i440fx-piix-1996/x86/')
+        IMG_TAG=docker-friendlyarm_nanopi-${board_id}-${FSTYPE}-sysupgrade.img.gz
 
-        if [ "${TEST}" != false ];then
-            IMG_TAG=latest-${FSTYPE}${VER}-${REPO}-${IM_BRANCH}
-        else
-            # dockerhub jsonfilter -e '@["results"][*].name'
-            IMG_TAG=$(grep -E release /tmp/registr_list | sort -rn | grep '${FSTYPE}${VER}-${REPO}' | grep ${IM_BRANCH} | head -n1)
-        fi
-        # 没合并到 master 上暂时使用测试固件
-        [ -z "${IMG_TAG}" ] && IMG_TAG=latest-${FSTYPE}${VER}-${REPO}-${IM_BRANCH}
-        
-        # 部分源码的 branch 带 openwrt- 前缀，IM_BRANCH 获取到的是数字
-        # 这里查找下确认镜像存在否
-        IMG_TAG_prefix=$(echo ${IMG_TAG} | sed "s/-${IM_BRANCH}//" )
-        IMG_TAG=$(grep $IMG_TAG_prefix /tmp/registr_list  | grep $IM_BRANCH)
-
-        [ -z "$IMG_TAG" ] && err "没有查询到可用镜像，分支是否有误"
-
+        # 升级文件不存在
         if [ ! -f "${USER_FILE}" ];then
-            if [ -f ${USER_FILE}.tar.gz ] && [ ! -f ${tmp_mountpoint}/sha256sums ] && [ ! -f /tmp/sha256sums ];then
+            if [ ! -f ${tmp_mountpoint}/sha256sums ] && [ ! -f /tmp/sha256sums ];then
                 # 下载 layer 被中断，删除掉走下面的下载逻辑
-                rm -f ${USER_FILE}.tar.gz
+                rm -f ${USER_FILE}
             fi
-            if [ ! -f  ${USER_FILE}.tar.gz ];then
-                registry_blob_download_op ${board_id} ${IMG_TAG}
+            if [ ! -f ${USER_FILE} ];then
+                github_blob_download_op ${latest_release_tag} ${IMG_TAG}
             fi
-            cd ${tmp_mountpoint}
-            info "下载完成，开始解压 blob layer"
-            tar zxf ${USER_FILE}.tar.gz
-            rm -f ${USER_FILE}.tar.gz
-            # x86-64 是 img 结尾，其余的是 img.gz
-            if ls *${blob_layer_reg_str}* | grep -Eq 'img$';then
-                # 不再继续解压
-                mv *${blob_layer_reg_str}* ${USE_FILE}
-                check_file=$USE_FILE
-            else
-                mv *${blob_layer_reg_str}* ${USER_FILE}
-            fi
-            mv sha256sums /tmp/
+            info "下载完成"
         fi
     fi
     if [ -f /tmp/sha256sums ];then
@@ -641,7 +597,6 @@ function main(){
     # 自带的 dd 不行
     # [ ! -f /usr/libexec/dd-coreutils ] && opkg update && opkg install coreutils-dd
 
-    $board_id
     update
 }
 
