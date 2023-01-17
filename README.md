@@ -18,10 +18,10 @@
 - 下载地址：https://github.com/gngpp/NanoPi-R4S-R4SE/releases
 - 电报群：https://t.me/DHDAXCW
 
-### 该升级支持4G版，1G版
-- 多版本在里面，自己选 👇ok 
+### 支持在线升级，自动扩容根分区
+- SSH进入终端
 ```
-wget https://raw.githubusercontent.com/lone-wind/scripts/main/onlineupdate.sh && sh onlineupdate.sh
+bash +x ~/update.sh
 ```
 
 # 插件展示
