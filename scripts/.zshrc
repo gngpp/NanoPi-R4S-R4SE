@@ -100,3 +100,4 @@ source $ZSH/oh-my-zsh.sh
 
 autoload -U compinit && compinit
 cat /etc/banner
+bash +x /etc/sysinfo.sh

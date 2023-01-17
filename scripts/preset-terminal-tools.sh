@@ -24,3 +24,9 @@ cp ../../../scripts/.zshrc .
 cp ../../../scripts/update.sh .
 
 popd
+
+mkdir -p files/etc
+pushd files/etc
+# System info
+cp ../../../scripts/sysinfo.sh .
+popd

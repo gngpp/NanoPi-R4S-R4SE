@@ -97,6 +97,9 @@ git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
 git clone --depth=1 https://github.com/gngpp/luci-theme-neobird
 git clone --depth=1 https://github.com/gngpp/luci-theme-atmaterial
 
+# Add luci-app-autotimeset
+git clone --depth=1 https://github.com/sirpdboy/luci-app-autotimeset
+
 # Add subconverter
 git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
 
