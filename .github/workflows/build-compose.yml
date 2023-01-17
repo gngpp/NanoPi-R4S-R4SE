@@ -120,7 +120,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
 
   Build:
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
     needs: [Download]
 
