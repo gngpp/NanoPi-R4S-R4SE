@@ -21,7 +21,10 @@
 ### 支持在线升级，自动扩容根分区
 - SSH进入终端
 ```
+# 会保存配置备份
 bash +x ~/update.sh
+# 跳过备份
+SKIP_BACK bash +x ~/update.sh
 ```
 
 # 插件展示
