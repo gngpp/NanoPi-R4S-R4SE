@@ -89,14 +89,14 @@ function get_latest_release() {
 
 
 function github_blob_download_op(){
-    echo -e '\e[92m开始下载: '$1'/sha256sums\e[0m'
+    info "开始下载: '$1'/sha256sums"
     url=https://ghproxy.com/https://github.com/$USER_REPO/releases/download/$1/docker-sha256sums
-    echo "link: $url"
+    info "link: $url"
     curl -L $url -o /tmp/sha256sums
 
-    echo -e '\e[92m开始下载: '$1/$2'\e[0m'
+    info "开始下载: '$1/$2'"
     url=https://ghproxy.com/https://github.com/$USER_REPO/releases/download/$1/$2
-    echo "link: $url"
+    info "link: $url"
     curl -L $url -o ${USER_FILE}
 }
 
@@ -225,7 +225,7 @@ function update(){
         info "此次使用本地文件: ${USER_FILE} 来升级"
     else
         latest_release_tag=`get_latest_release ${USER_REPO}`
-        echo -e '\e[92m准备更新到: '$latest_release_tag'\e[0m'
+        info "准备更新到: '$latest_release_tag'"
 
         board_id=$(cat /etc/board.json | jsonfilter -e '@["model"].id' | sed 's/friendly.*,nanopi-//;s/xunlong,orangepi-//;s/^r2$/r2s/;s/^r1s-h5$/r1s/;s/^r1$/r1s-h3/;s/^r1-plus$/r1p/;s/^r1-plus-lts$/r1p-lts/;s/default-string-default-string/x86/;s/vmware-inc-vmware7-1/x86/;s/qemu-standard-pc-q35-ich9-2009/x86/;s/qemu-standard-pc-i440fx-piix-1996/x86/')
         IMG_TAG=docker-friendlyarm_nanopi-${board_id}-${FSTYPE}-sysupgrade.img.gz
