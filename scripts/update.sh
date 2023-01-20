@@ -18,7 +18,7 @@ tmp_mountpoint=/opt
 NO_NET=''
 : ${VER:=} # slim or full
 
-: ${ghproxy:=https://github.cooluc.com/}
+: ${ghproxy:=ghproxy.com}
 
 # 必须 /tmp 目录里操作
 WORK_DIR=/tmp/update
