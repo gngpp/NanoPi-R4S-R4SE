@@ -1,4 +1,3 @@
-# 中文简体 | [English](https://github.com/gngpp/NanoPi-R4S-2021/blob/main/EngLish.md) <img src="https://img.shields.io/github/downloads/gngpp/NanoPi-R4S-R4SE/total.svg?style=for-the-badge&color=32C955"/>
 # NanoPi-R4S-R4SE
 ## 👉使用本固件前，请严格遵守国家互联网使用相关法律规定,不要违反国家法律规定！👈
 
