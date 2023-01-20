@@ -23,7 +23,7 @@
 # 会保存配置备份
 bash +x ~/update.sh
 # 跳过备份
-SKIP_BACK bash +x ~/update.sh
+SKIP_BACK=1 bash +x ~/update.sh
 ```
 
 ### 预览
