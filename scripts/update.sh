@@ -19,10 +19,6 @@ NO_NET=''
 : ${VER:=} # slim or full
 
 : ${ghproxy:=https://github.cooluc.com/}
-: ${docker_repo_ns:=registry.aliyuncs.com/zhangguanzhang}
-
-repo_domain=${docker_repo_ns%/*}
-repo_namespace=${docker_repo_ns#*/}
 
 # 必须 /tmp 目录里操作
 WORK_DIR=/tmp/update
@@ -587,9 +583,9 @@ function main(){
 
     # 不存在本地文件离线升级，并且没网就退出
     if [ ! -f "$USER_FILE" ];then
-        http_code=$(curl --write-out '%{http_code}' --silent --output /dev/null https://$repo_domain 2>/dev/null || echo 000)
+        http_code=$(curl --write-out '%{http_code}' --silent --output /dev/null https://$ghproxy 2>/dev/null || echo 000)
         if [ "$http_code" != 200 ];then
-            err "无法访问: ${repo_domain}，是否没有配置 wan 或者无法上网"
+            err "无法访问: ${ghproxy}，是否没有配置 wan 或者无法上网"
         fi
     fi
     auto_set_block_var
