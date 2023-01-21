@@ -107,6 +107,10 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
+    - name: Comporession
+      run: |
+        ZSTD_CLEVEL=19 tar --zstd -cf openwrt.tar.zst ./openwrt
+        
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
