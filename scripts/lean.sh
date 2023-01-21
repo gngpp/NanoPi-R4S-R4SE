@@ -94,7 +94,7 @@ git clone --depth=1 https://github.com/lisaac/luci-lib-docker
 # Add luci-theme
 # git clone https://github.com/DHDAXCW/theme
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
-git clone --depth=1 https://github.com/gngpp/luci-theme-neobird
+git clone --depth=1 https://github.com/gngpp/luci-theme-design
 git clone --depth=1 https://github.com/gngpp/luci-theme-atmaterial
 
 # Add luci-app-autotimeset
