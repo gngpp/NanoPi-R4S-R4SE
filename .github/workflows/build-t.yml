@@ -57,11 +57,16 @@ jobs:
       id: copy
       run: |
         ID="$(docker create --name openwrt "$IMAGE")"
-        docker cp $ID:/openwrt ./openwrt
+        docker cp $ID:/openwrt/openwrt.tar.zst ./openwrt.tar.zst
         docker rm $ID
         docker ps -a
         docker rmi $(docker images -q) -f
         docker images
+        ls -alh
+
+    - name: Decompression
+      run: | 
+        tar -xf openwrt.tar.zst
         ls -alh ./openwrt
 
     - name: Clean
