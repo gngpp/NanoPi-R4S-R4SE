@@ -1,4 +1,4 @@
-name: build
+name: build-10900T
 
 on:
   repository_dispatch:
@@ -21,7 +21,7 @@ env:
 jobs:
 
   Build:
-    runs-on: [self-hosted, linux, x64, 10850K]
+    runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
 
     outputs:
