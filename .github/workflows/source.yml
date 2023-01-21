@@ -100,7 +100,7 @@ jobs:
         
     - name: Comporession
       run: |
-        ZSTD_CLEVEL=19 tar --zstd -cf openwrt.tar.zst ./openwrt
+        tar --zstd -cf openwrt.tar.zst ./openwrt
 
     - name: Build and push
       id: docker_build
