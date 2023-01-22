@@ -9,6 +9,7 @@ set -e
 : ${TEST:=false} # 默认使用 main 分支编译的，test分支是测试阶段
 : ${REPO:=} # lede openwrt
 : ${USER_REPO=gngpp/NanoPi-R4S-R4SE}
+: ${PROXY:=true}
 
 tmp_mountpoint=/opt
 
@@ -85,15 +86,29 @@ function get_latest_release() {
 
 
 function github_blob_download_op(){
-    info "开始下载: '$1'/sha256sums"
-    url=https://ghproxy.com/https://github.com/$USER_REPO/releases/download/$1/docker-sha256sums
-    info "link: $url"
-    curl -L $url -o /tmp/sha256sums
 
-    info "开始下载: '$1/$2'"
-    url=https://ghproxy.com/https://github.com/$USER_REPO/releases/download/$1/$2
-    info "link: $url"
-    curl -L $url -o ${USER_FILE}
+    sha_url=https://github.com/$USER_REPO/releases/download/$1/docker-sha256sums
+    firmware_url=https://github.com/$USER_REPO/releases/download/$1/$2
+    if [ "$PROXY" = 'true' ];then
+        info "开始下载: '$1'/sha256sums"
+        url=https://$ghproxy/$sha_url
+        info "link: $url"
+        curl -L $url -o /tmp/sha256sums
+
+        info "开始下载: '$1/$2'"
+        url=https://$ghproxy/$firmware_url
+        info "link: $url"
+        curl -L $url -o ${USER_FILE}
+        else {
+            info "开始下载: '$1'/sha256sums"
+            info "link: $sha_url"
+            curl -L $sha_url -o /tmp/sha256sums
+
+            info "开始下载: '$1/$2'"
+            info "link: $firmware_url"
+            curl -L $firmware_url -o ${USER_FILE}
+    }
+    fi
 }
 
 function r1s-h3(){
@@ -585,7 +600,7 @@ function main(){
     if [ ! -f "$USER_FILE" ];then
         http_code=$(curl --write-out '%{http_code}' --silent --output /dev/null https://$ghproxy 2>/dev/null || echo 000)
         if [ "$http_code" != 200 ];then
-            err "无法访问: ${ghproxy}，是否没有配置 wan 或者无法上网"
+            err "无法访问: https://${ghproxy}，是否没有配置 wan 或者无法上网"
         fi
     fi
     auto_set_block_var
