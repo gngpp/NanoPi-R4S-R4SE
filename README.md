@@ -13,7 +13,7 @@
 
 ### 默认编译  
 
-- 用户名：root 密码：password  管理IP：192.168.2.1
+- 用户名：root 密码：password  管理IP：10.0.1.1
 - 下载地址：https://github.com/gngpp/NanoPi-R4S-R4SE/releases
 - 电报群：https://t.me/DHDAXCW
 
