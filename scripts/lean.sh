@@ -24,6 +24,16 @@ git clone https://github.com/sbwml/luci-app-alist package/alist
 rm -rf feeds/packages/lang/golang
 svn export https://github.com/sbwml/packages_lang_golang/branches/19.x feeds/packages/lang/golang
 
+# speedtest
+git clone https://github.com/sirpdboy/netspeedtest.git package/netspeedtest
+
+# control
+rm -rf ./feeds/luci/applications/luci-app-control-speedlimit
+rm -rf ./feeds/luci/applications/luci-app-timecontrol
+rm -rf ./feeds/luci/applications/luci-app-control-timewol
+rm -rf ./feeds/luci/applications/luci-app-control-webrestriction
+rm -rf ./feeds/luci/applications/luci-app-control-weburl
+
 # Clone community packages
 mkdir package/community
 pushd package/community
@@ -32,9 +42,10 @@ pushd package/community
 git clone --depth=1 https://github.com/Lienol/openwrt-package
 rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
-rm -rf openwrt-package/luci-app-control-timewol
-rm -rf openwrt-package/luci-app-control-webrestriction
-rm -rf openwrt-package/luci-app-control-weburl
+# rm -rf openwrt-package/luci-app-control-timewol
+# rm -rf openwrt-package/luci-app-control-webrestriction
+# rm -rf openwrt-package/luci-app-control-weburl
+# rm -rf openwrt-package/luci-app-timecontrol
 
 # Add luci-app-adguardhome
 # svn export https://github.com/DHDAXCW/openwrt-packages/trunk/luci-app-adguardhome
