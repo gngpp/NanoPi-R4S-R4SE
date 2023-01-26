@@ -171,12 +171,6 @@ jobs:
           echo "后台地址：10.0.1.1
                 docker = 带docker" >> release.txt
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
-    
-    - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: | 
-        docker rmi $(docker images -q) -f
-        docker images
 
   upload:
     runs-on: [self-hosted, linux, x64, 10900T]
@@ -184,10 +178,15 @@ jobs:
     needs: [build]
 
     steps:
-  
+    - name: Remove Images
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.build.outputs.RELEASE_SUCCESS == 'success'
+      run: | 
+        docker rmi $(docker images -q) -f
+        docker images
+
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: needs.build.outputs.RELEASE_SUCCESS == 'success' && !cancelled()
+      if: needs.build.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
