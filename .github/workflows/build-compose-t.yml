@@ -276,7 +276,7 @@ jobs:
                 docker = 带docker" >> release.txt
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
-  Upload_Job:
+  uoload:
     runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
     needs: [build]
