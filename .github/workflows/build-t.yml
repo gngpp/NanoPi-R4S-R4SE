@@ -171,6 +171,12 @@ jobs:
           echo "后台地址：10.0.1.1
                 docker = 带docker" >> release.txt
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
+    
+    - name: Remove Images
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: | 
+        docker rmi $(docker images -q) -f
+        docker images
 
   uoload:
     runs-on: [self-hosted, linux, x64, 10900T]
@@ -205,12 +211,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           
-    - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: | 
-        docker rmi $(docker images -q) -f
-        docker images
-
     - name: Delete Artifacts
       uses: geekyeggo/delete-artifact@v1
       with:
