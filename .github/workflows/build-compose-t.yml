@@ -281,8 +281,8 @@ jobs:
       run: | 
         docker rmi $(docker images -q) -f
         docker images
-        
-  uoload:
+
+  upload:
     runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
     needs: [build]
