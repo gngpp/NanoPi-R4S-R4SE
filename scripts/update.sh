@@ -91,7 +91,7 @@ function github_blob_download_op(){
     sha_url=https://github.com/$USER_REPO/releases/download/$1/docker-sha256sums
     firmware_url=https://github.com/$USER_REPO/releases/download/$1/$2
     if [ "$PROXY" = 'true' ];then
-    	info "启用代理：$PROXY"
+    	info "启用代理：$ghproxy"
         sha_url=https://$ghproxy/$sha_url
         firmware_url=https://$ghproxy/$firmware_url
     fi
