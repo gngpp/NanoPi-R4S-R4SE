@@ -26,11 +26,7 @@ svn export https://github.com/sbwml/packages_lang_golang/branches/19.x feeds/pac
 
 # speedtest
 git clone https://github.com/sirpdboy/netspeedtest.git package/netspeedtest
-
-# luci-app-onliner
-rm -rf ./feeds/luci/applications/luci-app-onliner
-svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner ./feeds/luci/applications/luci-app-onliner
-
+ 
 # control
 rm -rf ./feeds/luci/applications/luci-app-control-speedlimit
 rm -rf ./feeds/luci/applications/luci-app-timecontrol
@@ -66,6 +62,10 @@ git clone --depth=1 https://github.com/fw876/helloworld
 
 # Add luci-app-unblockneteasemusic
 git clone --branch master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
+
+# luci-app-onliner
+svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner ./luci-app-onliner
+
 
 # Add luci-app-vssr <M>
 git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb.git
