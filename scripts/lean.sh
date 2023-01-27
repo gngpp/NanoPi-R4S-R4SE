@@ -27,9 +27,6 @@ svn export https://github.com/sbwml/packages_lang_golang/branches/19.x feeds/pac
 # speedtest
 git clone https://github.com/sirpdboy/netspeedtest.git package/netspeedtest
 
-# luci-app-wizard
-git clone https://github.com/sirpdboy/luci-app-wizard.git package/luci-app-wizard
-
 # control
 rm -rf ./feeds/luci/applications/luci-app-control-speedlimit
 rm -rf ./feeds/luci/applications/luci-app-timecontrol
