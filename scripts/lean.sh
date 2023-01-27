@@ -63,10 +63,6 @@ git clone --depth=1 https://github.com/fw876/helloworld
 # Add luci-app-unblockneteasemusic
 git clone --branch master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
 
-# luci-app-onliner
-svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner
-
-
 # Add luci-app-vssr <M>
 git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb.git
 git clone --depth=1 https://github.com/jerrykuku/luci-app-vssr 
@@ -83,7 +79,7 @@ svn export https://github.com/linkease/nas-packages/trunk/network/services/ddnst
 
 # Add luci-app-onliner (need luci-app-nlbwmon)
 #git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
-svn export https://github.com/haiibo/openwrt-packages/trunk/luci-app-onliner
+svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner
 
 # Add ServerChan
 git clone --depth=1 https://github.com/tty228/luci-app-serverchan
