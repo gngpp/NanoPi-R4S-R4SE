@@ -29,7 +29,7 @@ git clone https://github.com/sirpdboy/netspeedtest.git package/netspeedtest
 
 # luci-app-onliner
 rm -rf ./feeds/packages/applications/luci-app-onliner
-svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner
+svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner package/luci-app-onliner
 
 # control
 rm -rf ./feeds/luci/applications/luci-app-control-speedlimit
