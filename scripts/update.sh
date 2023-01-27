@@ -88,7 +88,7 @@ function get_latest_release() {
 
 function github_blob_download_op(){
 
-    sha_url=https://github.com/$USER_REPO/releases/download/$1/docker-sha256sums
+    sha_url=https://github.com/$USER_REPO/releases/download/$1/${VERSION}-sha256sums
     firmware_url=https://github.com/$USER_REPO/releases/download/$1/$2
     if [ "$PROXY" = 'true' ];then
     	info "启用代理：$ghproxy"
