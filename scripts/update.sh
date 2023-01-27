@@ -10,6 +10,7 @@ set -e
 : ${REPO:=} # lede openwrt
 : ${USER_REPO=gngpp/NanoPi-R4S-R4SE}
 : ${PROXY:=true}
+: ${VERSION:=docker}
 
 tmp_mountpoint=/opt
 
@@ -79,7 +80,7 @@ function init_d_stop(){
 }
 
 function get_latest_release() {
-	curl --silent "https://api.github.com/repos/$1/releases/latest" |	# Get latest release from GitHub api
+	curl --connect-timeout 2 --silent "https://api.github.com/repos/$1/releases/latest" |	# Get latest release from GitHub api
 	grep '"tag_name":' |												# Get tag line
 	sed -E 's/.*"([^"]+)".*/\1/'										# Pluck JSON value
 }
@@ -90,25 +91,17 @@ function github_blob_download_op(){
     sha_url=https://github.com/$USER_REPO/releases/download/$1/docker-sha256sums
     firmware_url=https://github.com/$USER_REPO/releases/download/$1/$2
     if [ "$PROXY" = 'true' ];then
-        info "开始下载: '$1'/sha256sums"
-        url=https://$ghproxy/$sha_url
-        info "link: $url"
-        curl -L $url -o /tmp/sha256sums
-
-        info "开始下载: '$1/$2'"
-        url=https://$ghproxy/$firmware_url
-        info "link: $url"
-        curl -L $url -o ${USER_FILE}
-        else {
-            info "开始下载: '$1'/sha256sums"
-            info "link: $sha_url"
-            curl -L $sha_url -o /tmp/sha256sums
-
-            info "开始下载: '$1/$2'"
-            info "link: $firmware_url"
-            curl -L $firmware_url -o ${USER_FILE}
-    }
+    	info "启用代理：$PROXY"
+        sha_url=https://$ghproxy/$sha_url
+        firmware_url=https://$ghproxy/$firmware_url
     fi
+    info "开始下载hash文件: '$1'/sha256sums"
+    info "link: $sha_url"
+    curl --retry 5 max-time 3 --connect-timeout 2 -L $sha_url -o /tmp/sha256sums
+
+    info "开始下载固件: '$1/$2'"
+    info "link: $firmware_url"
+    curl --retry 5 max-time 3 --connect-timeout 2 -L $firmware_url -o ${USER_FILE}
 }
 
 function r1s-h3(){
@@ -239,7 +232,7 @@ function update(){
         info "准备更新到: '$latest_release_tag'"
 
         board_id=$(cat /etc/board.json | jsonfilter -e '@["model"].id' | sed 's/friendly.*,nanopi-//;s/xunlong,orangepi-//;s/^r2$/r2s/;s/^r1s-h5$/r1s/;s/^r1$/r1s-h3/;s/^r1-plus$/r1p/;s/^r1-plus-lts$/r1p-lts/;s/default-string-default-string/x86/;s/vmware-inc-vmware7-1/x86/;s/qemu-standard-pc-q35-ich9-2009/x86/;s/qemu-standard-pc-i440fx-piix-1996/x86/')
-        IMG_TAG=docker-friendlyarm_nanopi-${board_id}-${FSTYPE}-sysupgrade.img.gz
+        IMG_TAG=${VERSION}-friendlyarm_nanopi-${board_id}-${FSTYPE}-sysupgrade.img.gz
 
         # 升级文件不存在
         if [ ! -f "${USER_FILE}" ];then
