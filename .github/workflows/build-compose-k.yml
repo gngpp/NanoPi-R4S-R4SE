@@ -29,7 +29,7 @@ env:
 
 jobs:
 
-  Download:
+  source:
     runs-on: ubuntu-20.04
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
@@ -123,10 +123,10 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
 
-  Build:
+  build:
     runs-on: [self-hosted, linux, x64, 10850K]
     timeout-minutes: 1440
-    needs: [Download]
+    needs: [source]
 
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
@@ -135,6 +135,9 @@ jobs:
       SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
       FIRMWARE: ${{ steps.compile.outputs.FIRMWARE }}
       GENERATE_STATUS: ${{ steps.generate.outputs.GENERATE_STATUS }}
+      RELEASE_DATE: ${{ steps.tag.outputs.RELEASE_DATE }}
+      RELEASE_TAG: ${{ steps.tag.outputs.RELEASE_TAG }}
+      RELEASE_SUCCESS: ${{ steps.tag.outputs.RELEASE_SUCCESS }}
 
     steps:
   
@@ -172,6 +175,7 @@ jobs:
       run: | 
         tar -xf openwrt.tar.zst
         ls -alh ./openwrt
+        rm openwrt.tar.zst
       
     - name: Clean
       run: |
@@ -194,7 +198,7 @@ jobs:
         cd $OPENWRTROOT
         cat .config
 
-    - name: Compile Packages
+    - name: Compile
       id: compile
       run: |
         cd $OPENWRTROOT
@@ -265,23 +269,36 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-          echo "release_tag=$(date +"%Y.%m.%d")-Lean1" >> $GITHUB_OUTPUT
-          echo "release_date=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=$(date +"%Y.%m.%d")-Lean1" >> $GITHUB_OUTPUT
+          echo "RELEASE_DATA=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
           touch release.txt
           echo "后台地址：10.0.1.1
                 docker = 带docker" >> release.txt
-          echo "status=success" >> $GITHUB_OUTPUT
-          
+          echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
+
+  upload:
+    runs-on: [self-hosted, linux, x64, 10850K]
+    timeout-minutes: 1440
+    needs: [build]
+
+    steps:
+  
+    - name: Remove Images
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.build.outputs.RELEASE_SUCCESS == 'success'
+      run: | 
+        docker rmi $(docker images -q) -f
+        docker images
+
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: steps.tag.outputs.status == 'success' && !cancelled()
+      if: needs.build.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-          name: ${{ steps.tag.outputs.release_date }} NanoPi-R4S-R4SE-linux.5.4_固件下载
-          tag_name: ${{ steps.tag.outputs.release_tag }}
+          name: ${{ needs.build.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
+          tag_name: ${{ needs.build.outputs.RELEASE_TAG }}
           body_path: release.txt
-          files: ${{ env.FIRMWARE }}/*
+          files: ${{ needs.build.outputs.FIRMWARE }}/*
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
@@ -297,12 +314,6 @@ jobs:
           delete_tags: true
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          
-    - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: | 
-        docker rmi $(docker images -q) -f
-        docker images
 
     - name: Delete Artifacts
       uses: geekyeggo/delete-artifact@v1

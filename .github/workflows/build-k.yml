@@ -20,7 +20,7 @@ env:
 
 jobs:
 
-  Build:
+  build:
     runs-on: [self-hosted, linux, x64, 10850K]
     timeout-minutes: 1440
 
@@ -31,9 +31,12 @@ jobs:
       SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
       FIRMWARE: ${{ steps.compile.outputs.FIRMWARE }}
       GENERATE_STATUS: ${{ steps.generate.outputs.GENERATE_STATUS }}
+      RELEASE_DATE: ${{ steps.tag.outputs.RELEASE_DATE }}
+      RELEASE_TAG: ${{ steps.tag.outputs.RELEASE_TAG }}
+      RELEASE_SUCCESS: ${{ steps.tag.outputs.RELEASE_SUCCESS }}
 
     steps:
-
+  
     - name: Initialization Environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -49,7 +52,7 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v3
-  
+      
     - name: Pull Image
       run: |
         docker pull $IMAGE
@@ -68,7 +71,8 @@ jobs:
       run: | 
         tar -xf openwrt.tar.zst
         ls -alh ./openwrt
-
+        rm openwrt.tar.zst
+      
     - name: Clean
       run: |
         cd openwrt
@@ -77,7 +81,6 @@ jobs:
         rm -rf ./tmp && rm -rf ./build_dir
     
     - name: Feeds Settings
-      id: update
       run: | 
         cd $OPENWRTROOT
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
@@ -85,13 +88,13 @@ jobs:
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
-        
+
     - name: Show config
       run: |
         cd $OPENWRTROOT
         cat .config
-        
-    - name: Compile Packages
+
+    - name: Compile
       id: compile
       run: |
         cd $OPENWRTROOT
@@ -162,32 +165,44 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-          echo "release_tag=$(date +"%Y.%m.%d")-Lean1" >> $GITHUB_OUTPUT
-          echo "release_date=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=$(date +"%Y.%m.%d")-Lean1" >> $GITHUB_OUTPUT
+          echo "RELEASE_DATA=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
           touch release.txt
           echo "后台地址：10.0.1.1
                 docker = 带docker" >> release.txt
-          echo "status=success" >> $GITHUB_OUTPUT
-          
+          echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
+
+  upload:
+    runs-on: [self-hosted, linux, x64, 10850K]
+    timeout-minutes: 1440
+    needs: [build]
+
+    steps:
+    - name: Remove Images
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.build.outputs.RELEASE_SUCCESS == 'success'
+      run: | 
+        docker rmi $(docker images -q) -f
+        docker images
+
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: steps.tag.outputs.status == 'success' && !cancelled()
+      if: needs.build.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-          name: ${{ steps.tag.outputs.release_date }} NanoPi-R4S-R4SE-linux.5.4_固件下载
-          tag_name: ${{ steps.tag.outputs.release_tag }}
+          name: ${{ needs.build.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
+          tag_name: ${{ needs.build.outputs.RELEASE_TAG }}
           body_path: release.txt
-          files: ${{ env.FIRMWARE }}/*
+          files: ${{ needs.build.outputs.FIRMWARE }}/*
 
     - name: Delete workflow runs
-      uses: Mattraks/delete-workflow-runs@v2
+      uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 1
         keep_minimum_runs: 1
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@v0.2.1
+      uses: dev-drprasad/delete-older-releases@v0.1.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
           keep_latest: 20
@@ -195,14 +210,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           
-    - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: | 
-        docker rmi $(docker images -q) -f
-        docker images
-
     - name: Delete Artifacts
-      uses: geekyeggo/delete-artifact@v2
+      uses: geekyeggo/delete-artifact@v1
       with:
           name: |
             bin-archive
