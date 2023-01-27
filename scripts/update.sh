@@ -97,11 +97,11 @@ function github_blob_download_op(){
     fi
     info "开始下载hash文件: '$1'/sha256sums"
     info "link: $sha_url"
-    curl --retry 5 max-time 3 --connect-timeout 2 -L $sha_url -o /tmp/sha256sums
+    curl --retry 5 --connect-timeout 2 -L $sha_url -o /tmp/sha256sums
 
     info "开始下载固件: '$1/$2'"
     info "link: $firmware_url"
-    curl --retry 5 max-time 3 --connect-timeout 2 -L $firmware_url -o ${USER_FILE}
+    curl --retry 5 --connect-timeout 2 -L $firmware_url -o ${USER_FILE}
 }
 
 function r1s-h3(){
