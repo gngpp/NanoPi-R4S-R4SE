@@ -64,7 +64,7 @@ git clone --depth=1 https://github.com/fw876/helloworld
 git clone --branch master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
 
 # luci-app-onliner
-svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner ./luci-app-onliner
+svn export https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner
 
 
 # Add luci-app-vssr <M>
