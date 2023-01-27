@@ -12,7 +12,7 @@ pushd customfeeds
 
 # Add luci-app-eqos
 # svn co https://github.com/immortalwrt/luci/trunk/applications/luci-app-eqos luci/applications/luci-app-eqos
-mv ./luci/applications/luci-app-eqos/po/zh_Hans ./luci/applications/luci-app-eqos/po/zh-cn
+# mv ./luci/applications/luci-app-eqos/po/zh_Hans ./luci/applications/luci-app-eqos/po/zh-cn
 # svn co https://github.com/haiibo/openwrt-packages/trunk/luci-app-eqos luci/applications/luci-app-eqos
 
 # Add luci-proto-modemmanager
