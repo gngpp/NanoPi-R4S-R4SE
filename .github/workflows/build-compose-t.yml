@@ -286,7 +286,10 @@ jobs:
     - name: Remove Images
       if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.build.outputs.RELEASE_SUCCESS == 'success'
       run: | 
-        docker rmi $(docker images -q) -f
+        ID_LIST="$(docker images -q)"
+        if [[ -n "${ID_LIST}" ]];then
+           docker rmi $ID_LIST -f
+        fi
         docker images
 
     - name: Upload firmware to release
