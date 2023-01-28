@@ -215,7 +215,7 @@ jobs:
 
     steps:
   
-    - name: Remove Target
+    - name: Remove Images
       if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.compile.outputs.RELEASE_SUCCESS == 'success'
       run: | 
         ID_LIST="$(docker images -q)"
