@@ -32,7 +32,7 @@ jobs:
   source:
     runs-on: ubuntu-20.04
     outputs:
-      OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
+      OPENWRTROOT: ${{ steps.reset.outputs.OPENWRTROOT }}
     steps:
   
     - name: Initialization Environment
@@ -73,7 +73,6 @@ jobs:
         rm -rf .git
         
     - name: Clone Custom Feeds
-      id: update
       run: |
         cd $OPENWRTROOT
         mkdir customfeeds
@@ -123,21 +122,13 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
 
-  build:
+  build-init:
     runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
     needs: [source]
 
     outputs:
-      OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
-      PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
-      TARGET: ${{ steps.compile.outputs.TARGET }}
-      SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
-      FIRMWARE: ${{ steps.compile.outputs.FIRMWARE }}
-      GENERATE_STATUS: ${{ steps.generate.outputs.GENERATE_STATUS }}
-      RELEASE_DATE: ${{ steps.tag.outputs.RELEASE_DATE }}
-      RELEASE_TAG: ${{ steps.tag.outputs.RELEASE_TAG }}
-      RELEASE_SUCCESS: ${{ steps.tag.outputs.RELEASE_SUCCESS }}
+      OPENWRTROOT: ${{ steps.clean.outputs.OPENWRTROOT }}
 
     steps:
   
@@ -178,6 +169,7 @@ jobs:
         rm openwrt.tar.zst
       
     - name: Clean
+      id: clean
       run: |
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
@@ -198,10 +190,40 @@ jobs:
         cd $OPENWRTROOT
         cat .config
 
-    - name: Compile
+  compile-toolchain:
+    runs-on: [self-hosted, linux, x64, 10900T]
+    timeout-minutes: 1440
+    needs: [build-init]
+
+    steps:
+    - name: Compile toolchain
+      run: | 
+        cd $OPENWRTROOT
+        echo -e "$(nproc) thread compile"
+        make tools/compile -j$(nproc)
+        make toolchain/compile -j$(nproc)
+  
+  compile:
+    runs-on: [self-hosted, linux, x64, 10900T]
+    timeout-minutes: 1440
+    needs: [compile-toolchain]
+
+    outputs:
+      OPENWRTROOT: ${{ needs.compile-toolchain.outputs.OPENWRTROOT }}
+      PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
+      TARGET: ${{ steps.compile.outputs.TARGET }}
+      SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
+      FIRMWARE: ${{ steps.compile.outputs.FIRMWARE }}
+      GENERATE_STATUS: ${{ steps.generate.outputs.GENERATE_STATUS }}
+      RELEASE_DATE: ${{ steps.tag.outputs.RELEASE_DATE }}
+      RELEASE_TAG: ${{ steps.tag.outputs.RELEASE_TAG }}
+      RELEASE_SUCCESS: ${{ steps.tag.outputs.RELEASE_SUCCESS }}
+
+    steps:
+
+    - name: Compile package
       id: compile
       run: |
-        cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
@@ -273,18 +295,19 @@ jobs:
           echo "RELEASE_DATA=$(date +"%Y.%m.%d")" >> $GITHUB_OUTPUT
           touch release.txt
           echo "后台地址：10.0.1.1
+                默认密码：password
                 docker = 带docker" >> release.txt
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
   upload:
     runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
-    needs: [build]
+    needs: [compile]
 
     steps:
   
     - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.build.outputs.RELEASE_SUCCESS == 'success'
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.compile.outputs.RELEASE_SUCCESS == 'success'
       run: | 
         ID_LIST="$(docker images -q)"
         if [[ -n "${ID_LIST}" ]];then
@@ -294,14 +317,14 @@ jobs:
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: needs.build.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
+      if: needs.compile.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-          name: ${{ needs.build.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
-          tag_name: ${{ needs.build.outputs.RELEASE_TAG }}
+          name: ${{ needs.compile.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
+          tag_name: ${{ needs.compile.outputs.RELEASE_TAG }}
           body_path: release.txt
-          files: ${{ needs.build.outputs.FIRMWARE }}/*
+          files: ${{ needs.compile.outputs.FIRMWARE }}/*
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
