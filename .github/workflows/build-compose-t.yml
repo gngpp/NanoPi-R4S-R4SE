@@ -224,6 +224,7 @@ jobs:
     - name: Compile package
       id: compile
       run: |
+        cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
