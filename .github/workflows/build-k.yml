@@ -3,6 +3,15 @@ name: build-10850K
 on:
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      use_machine:
+        description: 'Machine'
+        required: true
+        default: '10900T' 
+        type: choice
+        options:
+        - 10900T
+        - 10850K
   #schedule:
     #- cron: 0 17 * * *
   # watch:
@@ -21,7 +30,7 @@ env:
 jobs:
 
   compile-init:
-    runs-on: [self-hosted, linux, x64, 10850K]
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
 
     outputs:
@@ -92,7 +101,7 @@ jobs:
         cat .config
 
   compile-toolchain:
-    runs-on: [self-hosted, linux, x64, 10850K]
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
     needs: [compile-init]
     outputs:
@@ -109,8 +118,8 @@ jobs:
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
   
-  compile:
-    runs-on: [self-hosted, linux, x64, 10850K]
+  compile-package:
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
     needs: [compile-init, compile-toolchain]
 
@@ -209,14 +218,14 @@ jobs:
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
   upload:
-    runs-on: [self-hosted, linux, x64, 10850K]
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
-    needs: [compile]
+    needs: [compile-package]
 
     steps:
   
     - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.compile.outputs.RELEASE_SUCCESS == 'success'
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.compile-package.outputs.RELEASE_SUCCESS == 'success'
       run: | 
         ID_LIST="$(docker images -q)"
         if [[ -n "${ID_LIST}" ]];then
@@ -226,14 +235,14 @@ jobs:
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: needs.compile.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
+      if: needs.compile-package.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-          name: ${{ needs.compile.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
-          tag_name: ${{ needs.compile.outputs.RELEASE_TAG }}
+          name: ${{ needs.compile-package.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
+          tag_name: ${{ needs.compile-package.outputs.RELEASE_TAG }}
           body_path: release.txt
-          files: ${{ needs.compile.outputs.FIRMWARE }}/*
+          files: ${{ needs.compile-package.outputs.FIRMWARE }}/*
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main

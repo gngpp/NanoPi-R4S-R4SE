@@ -6,15 +6,25 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: build-compose-10850K
+name: build-compose
 
 on:
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      use_machine:
+        description: 'Machine'
+        required: true
+        default: '10900T' 
+        type: choice
+        options:
+        - 10900T
+        - 10850K
   #schedule:
     #- cron: 0 17 * * *
   # watch:
   #   types: started
+  
 
 env:
   REPO_URL: https://github.com/DHDAXCW/lede-rockchip
@@ -123,7 +133,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
 
   compile-init:
-    runs-on: [self-hosted, linux, x64, 10850K]
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
     needs: [source]
 
@@ -156,6 +166,9 @@ jobs:
     - name: Copy Files
       id: copy
       run: |
+        if [[ -f openwrt.tar.zst ]]; then
+            rm openwrt.tar.zst
+        fi
         ID="$(docker create --name openwrt "$IMAGE")"
         docker cp $ID:/openwrt/openwrt.tar.zst ./openwrt.tar.zst
         docker rm $ID
@@ -164,6 +177,9 @@ jobs:
 
     - name: Decompression
       run: | 
+        if [[ -d openwrt ]]; then
+            rm -rf ./openwrt
+        fi
         tar -xf openwrt.tar.zst
         ls -alh ./openwrt
         rm openwrt.tar.zst
@@ -179,8 +195,6 @@ jobs:
     - name: Feeds Settings
       run: | 
         cd $OPENWRTROOT
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
@@ -191,28 +205,30 @@ jobs:
         cat .config
 
   compile-toolchain:
-    runs-on: [self-hosted, linux, x64, 10850K]
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
     needs: [compile-init]
     outputs:
-      OPENWRTROOT: ${{ needs.compile-init.outputs.OPENWRTROOT }}
+      OPENWRTROOT: ${{ steps.compile.outputs.OPENWRTROOT }}
 
     steps:
     - name: Compile toolchain
+      id: compile
       run: | 
-        cd $OPENWRTROOT
-        echo "$(pwd)"
+        cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
   
-  compile:
-    runs-on: [self-hosted, linux, x64, 10850K]
+  compile-package:
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
     needs: [compile-init, compile-toolchain]
 
     outputs:
-      OPENWRTROOT: ${{ needs.compile-init.outputs.OPENWRTROOT }}
+      OPENWRTROOT: ${{ steps.compile.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
       TARGET: ${{ steps.compile.outputs.TARGET }}
       SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
@@ -227,7 +243,9 @@ jobs:
     - name: Compile package
       id: compile
       run: |
-        cd $OPENWRTROOT
+        cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
@@ -304,14 +322,14 @@ jobs:
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
   upload:
-    runs-on: [self-hosted, linux, x64, 10850K]
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", inputs.use_machine]') }}
     timeout-minutes: 1440
-    needs: [compile]
+    needs: [compile-package]
 
     steps:
   
     - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.compile.outputs.RELEASE_SUCCESS == 'success'
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.compile-package.outputs.RELEASE_SUCCESS == 'success'
       run: | 
         ID_LIST="$(docker images -q)"
         if [[ -n "${ID_LIST}" ]];then
@@ -321,14 +339,14 @@ jobs:
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: needs.compile.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
+      if: needs.compile-package.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-          name: ${{ needs.compile.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
-          tag_name: ${{ needs.compile.outputs.RELEASE_TAG }}
+          name: ${{ needs.compile-package.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux.5.4_固件下载
+          tag_name: ${{ needs.compile-package.outputs.RELEASE_TAG }}
           body_path: release.txt
-          files: ${{ needs.compile.outputs.FIRMWARE }}/*
+          files: ${{ needs.compile-package.outputs.FIRMWARE }}/*
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
