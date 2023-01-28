@@ -317,7 +317,7 @@ jobs:
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
   upload:
-    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", fromJSON('${{ inputs.use_machine }}')]') }}
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [compile-package]
 
