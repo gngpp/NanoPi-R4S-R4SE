@@ -54,17 +54,21 @@ jobs:
     - name: Copy Files
       id: copy
       run: |
-        ID="$(docker create --name openwrt "$IMAGE")"
-        docker cp $ID:/openwrt/openwrt.tar.zst ./openwrt.tar.zst
-        docker rm $ID
-        docker ps -a
+        if [[ ! -f openwrt.tar.zst ]]; then
+            ID="$(docker create --name openwrt "$IMAGE")"
+            docker cp $ID:/openwrt/openwrt.tar.zst ./openwrt.tar.zst
+            docker rm $ID
+            docker ps -a
+        fi
         ls -alh
 
     - name: Decompression
       run: | 
-        tar -xf openwrt.tar.zst
+        if [[ ! -d openwrt ]]; then
+            tar -xf openwrt.tar.zst
+            rm openwrt.tar.zst
+        fi
         ls -alh ./openwrt
-        rm openwrt.tar.zst
       
     - name: Clean
       id: clean
@@ -77,8 +81,6 @@ jobs:
     - name: Feeds Settings
       run: | 
         cd $OPENWRTROOT
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         make defconfig
@@ -216,6 +218,7 @@ jobs:
            docker rmi $ID_LIST -f
         fi
         docker images
+
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
