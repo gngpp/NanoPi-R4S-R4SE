@@ -133,7 +133,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
 
   compile-init:
-    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", fromJSON('${{ inputs.use_machine }}')]') }}
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [source]
 
@@ -205,25 +205,21 @@ jobs:
         cat .config
 
   compile-toolchain:
-    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", fromJSON('${{ inputs.use_machine }}')]') }}
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [compile-init]
-    outputs:
-      OPENWRTROOT: ${{ steps.compile.outputs.OPENWRTROOT }}
 
     steps:
     - name: Compile toolchain
       id: compile
       run: | 
         cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
   
   compile-package:
-    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", fromJSON('${{ inputs.use_machine }}')]') }}
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [compile-init, compile-toolchain]
 
@@ -244,8 +240,9 @@ jobs:
       id: compile
       run: |
         cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
-        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
+        OPENWRTROOT=$(pwd)
+        echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
