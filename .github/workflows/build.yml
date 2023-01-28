@@ -1,4 +1,4 @@
-name: build-10850K
+name: build
 
 on:
   repository_dispatch:
