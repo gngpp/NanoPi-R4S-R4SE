@@ -30,7 +30,7 @@ env:
 jobs:
 
   compile-init:
-    runs-on: ${{ fromJSON([ "self-hosted", "Linux", "X64", inputs.use_machine]) }}
+    runs-on:  【self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
 
     outputs:
@@ -101,7 +101,7 @@ jobs:
         cat .config
 
   compile-toolchain:
-    runs-on: ${{ fromJSON([ "self-hosted", "Linux", "X64", inputs.use_machine]) }}
+    runs-on:  【self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [compile-init]
 
@@ -115,7 +115,7 @@ jobs:
         make toolchain/compile -j$(nproc)
   
   compile-package:
-    runs-on: ${{ fromJSON([ "self-hosted", "Linux", "X64", inputs.use_machine]) }}
+    runs-on:  【self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [compile-init, compile-toolchain]
 
@@ -215,7 +215,7 @@ jobs:
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
   upload:
-    runs-on: ${{ fromJSON([ "self-hosted", "Linux", "X64", inputs.use_machine]) }}
+    runs-on:  【self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [compile-package]
 
