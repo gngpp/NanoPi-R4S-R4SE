@@ -122,7 +122,7 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
 
-  build-init:
+  compile-init:
     runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
     needs: [source]
@@ -193,7 +193,9 @@ jobs:
   compile-toolchain:
     runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
-    needs: [build-init]
+    needs: [compile-init]
+    outputs:
+      OPENWRTROOT: ${{ needs.compile-init.outputs.OPENWRTROOT }}
 
     steps:
     - name: Compile toolchain
@@ -206,10 +208,10 @@ jobs:
   compile:
     runs-on: [self-hosted, linux, x64, 10900T]
     timeout-minutes: 1440
-    needs: [compile-toolchain]
+    needs: [compile-init, compile-toolchain]
 
     outputs:
-      OPENWRTROOT: ${{ needs.compile-toolchain.outputs.OPENWRTROOT }}
+      OPENWRTROOT: ${{ needs.compile-init.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
       TARGET: ${{ steps.compile.outputs.TARGET }}
       SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
