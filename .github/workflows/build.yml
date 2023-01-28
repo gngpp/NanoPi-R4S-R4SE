@@ -30,7 +30,7 @@ env:
 jobs:
 
   compile-init:
-    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", fromJSON('${{ fromJSON('${{ inputs.use_machine }}') }}')]') }}
+    runs-on: ${{ fromJSON('[ "self-hosted", "Linux", "X64", fromJSON('${{ inputs.use_machine }}')]') }}
     timeout-minutes: 1440
 
     outputs:
