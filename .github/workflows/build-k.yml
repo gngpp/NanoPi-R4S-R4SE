@@ -103,7 +103,6 @@ jobs:
         cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        echo "$(pwd)"
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
@@ -114,7 +113,7 @@ jobs:
     needs: [compile-init, compile-toolchain]
 
     outputs:
-      OPENWRTROOT: ${{ needs.compile-init.outputs.OPENWRTROOT }}
+      OPENWRTROOT: ${{ steps.compile.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
       TARGET: ${{ steps.compile.outputs.TARGET }}
       SUBTARGET: ${{ steps.compile.outputs.SUBTARGET }}
@@ -129,7 +128,9 @@ jobs:
     - name: Compile package
       id: compile
       run: |
-        cd $OPENWRTROOT
+        cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
