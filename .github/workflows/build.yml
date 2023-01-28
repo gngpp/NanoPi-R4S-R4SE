@@ -7,7 +7,7 @@ on:
       use_machine:
         description: 'Machine'
         required: true
-        default: '10900T' 
+        default: 10900T
         type: choice
         options:
         - 10900T
@@ -30,7 +30,7 @@ env:
 jobs:
 
   compile-init:
-    runs-on:  【self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on:  【self-hosted, Linux, X64, ${{ inputs.use_machine }}]
     timeout-minutes: 1440
 
     outputs:
