@@ -201,6 +201,7 @@ jobs:
     - name: Compile toolchain
       run: | 
         cd $OPENWRTROOT
+        echo "$(pwd)"
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
