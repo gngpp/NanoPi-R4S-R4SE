@@ -244,8 +244,6 @@ jobs:
         echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_ENV
         echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
-        make tools/compile -j$(nproc)
-        make toolchain/compile -j$(nproc)
         make target/compile -j$(nproc)
         make diffconfig
         make package/compile -j$(nproc) IGNORE_ERRORS=1
