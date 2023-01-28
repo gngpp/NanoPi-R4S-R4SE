@@ -23,7 +23,6 @@ jobs:
   compile-init:
     runs-on: [self-hosted, linux, x64, 10850K]
     timeout-minutes: 1440
-    needs: [source]
 
     outputs:
       OPENWRTROOT: ${{ steps.clean.outputs.OPENWRTROOT }}
