@@ -94,12 +94,15 @@ jobs:
     timeout-minutes: 1440
     needs: [compile-init]
     outputs:
-      OPENWRTROOT: ${{ needs.compile-init.outputs.OPENWRTROOT }}
+      OPENWRTROOT: ${{ steps.compile.outputs.OPENWRTROOT }}
 
     steps:
     - name: Compile toolchain
+      id: compile
       run: | 
-        cd $OPENWRTROOT
+        cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
+        echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
         echo "$(pwd)"
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
