@@ -90,7 +90,7 @@ jobs:
         git clone --depth=1 https://github.com/gngpp/luci customfeeds/luci
         chmod +x ../scripts/*.sh
         ../scripts/hook-feeds.sh
-        sed -i 's/default GCC_USE_VERSION_8/default GCC_USE_VERSION_11/g' toolchain/gcc/Config.in
+        sed -i 's/default GCC_USE_VERSION_11/default GCC_USE_VERSION_8/g' toolchain/gcc/Config.in
   
     - name: Update And install Feeds
       run: | 
