@@ -19,7 +19,7 @@ on:
         type: choice
         options:
         - 10900T
-        - mint
+        - 10850K
   #schedule:
     #- cron: 0 17 * * *
   # watch:
