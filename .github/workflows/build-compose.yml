@@ -39,7 +39,7 @@ env:
 
 jobs:
 
-  source:
+  source-code:
     runs-on: ubuntu-20.04
     outputs:
       OPENWRTROOT: ${{ steps.reset.outputs.OPENWRTROOT }}
@@ -135,7 +135,7 @@ jobs:
   compile-init:
     runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
-    needs: [source]
+    needs: [source-code]
 
     outputs:
       OPENWRTROOT: ${{ steps.clean.outputs.OPENWRTROOT }}
