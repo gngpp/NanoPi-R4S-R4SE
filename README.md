@@ -32,7 +32,7 @@ PROXY=false bash +x ~/update.sh
 <img src="./preview/login.png"/>
 <img src="./preview/home.png"/>
 <img src="./preview/vssr.png"/>
- 
+<img src="./preview/light.png"/> 
 
 # [赏个鸡腿吧](https://afdian.net/@dhdaxcw/plan)
 ### https://afdian.net/@dhdaxcw/plan
