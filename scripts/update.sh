@@ -20,7 +20,8 @@ tmp_mountpoint=/opt
 NO_NET=''
 : ${VER:=} # slim or full
 
-: ${ghproxy:=ghproxy.com}
+# gh.flyinbug.top/gh、ghproxy.com
+: ${proxy_domain_path:=ghproxy.com}
 
 # 必须 /tmp 目录里操作
 WORK_DIR=/tmp/update
@@ -91,9 +92,9 @@ function github_blob_download_op(){
     sha_url=https://github.com/$USER_REPO/releases/download/$1/${VERSION}-sha256sums
     firmware_url=https://github.com/$USER_REPO/releases/download/$1/$2
     if [ "$PROXY" = 'true' ];then
-    	info "启用代理：$ghproxy"
-        sha_url=https://$ghproxy/$sha_url
-        firmware_url=https://$ghproxy/$firmware_url
+    	info "启用代理：$proxy_domain_path"
+        sha_url=https://$proxy_domain_path/$sha_url
+        firmware_url=https://$proxy_domain_path/$firmware_url
     fi
     info "开始下载hash文件: '$1'/sha256sums"
     info "link: $sha_url"
@@ -591,9 +592,9 @@ function main(){
 
     # 不存在本地文件离线升级，并且没网就退出
     if [ ! -f "$USER_FILE" ];then
-        http_code=$(curl --write-out '%{http_code}' --silent --output /dev/null https://$ghproxy 2>/dev/null || echo 000)
+        http_code=$(curl --write-out '%{http_code}' --silent --output /dev/null https://$proxy_domain_path 2>/dev/null || echo 000)
         if [ "$http_code" != 200 ];then
-            err "无法访问: https://${ghproxy}，是否没有配置 wan 或者无法上网"
+            err "无法访问: https://${proxy_domain_path}，是否没有配置 wan 或者无法上网"
         fi
     fi
     auto_set_block_var
