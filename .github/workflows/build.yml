@@ -25,7 +25,7 @@ env:
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  IMAGE: ${{ secrets.IMAGE }}
+  IMAGE: ${{ vars.IMAGE }}
 
 jobs:
 

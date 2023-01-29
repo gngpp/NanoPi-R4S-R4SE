@@ -34,7 +34,7 @@ env:
   KMODS_IN_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  IMAGE: ${{ secrets.IMAGE }}
+  IMAGE: ${{ vars.IMAGE }}
   COMMIT_ID: ${{ vars.COMMIT_ID }}
 
 jobs:
@@ -127,7 +127,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.IMAGE }}
+        tags: ${{ vars.IMAGE }}
         
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
