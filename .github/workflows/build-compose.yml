@@ -218,6 +218,8 @@ jobs:
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
+        make target/compile -j$(nproc)
+        make diffconfig
   
   compile-package:
     runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
@@ -245,8 +247,6 @@ jobs:
         echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_ENV
         echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_OUTPUT
         echo -e "$(nproc) thread compile"
-        make target/compile -j$(nproc)
-        make diffconfig
         make package/compile -j$(nproc) IGNORE_ERRORS=1
         make package/index
         cd $OPENWRTROOT/bin/packages/*
