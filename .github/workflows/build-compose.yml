@@ -344,12 +344,6 @@ jobs:
           body_path: release.txt
           files: ${{ needs.compile-package.outputs.FIRMWARE }}/*
 
-    - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
-      with:
-        retain_days: 1
-        keep_minimum_runs: 1
-
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
