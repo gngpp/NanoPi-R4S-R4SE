@@ -107,7 +107,7 @@ function github_blob_download_op(){
 
 function r1s-h3(){
     #part_prefix=p
-    tmp_mountpoint_end_size=2600MB
+    tmp_mountpoint_end_size=3500MB
     first_grow_condition_size=1800
     blob_layer_reg_str=r1s-h3
     # [ ! -d /sys/block/$block_device ] && block_device='mmcblk1'
@@ -116,7 +116,7 @@ function r1s-h3(){
 
 function r1s-h5(){
     #part_prefix=p
-    tmp_mountpoint_end_size=2600MB
+    tmp_mountpoint_end_size=3500MB
     first_grow_condition_size=1800
     blob_layer_reg_str=r1s-h5
     # [ ! -d /sys/block/$block_device ] && block_device='mmcblk1'
@@ -125,7 +125,7 @@ function r1s-h5(){
 
 function r2s(){
     #part_prefix=p
-    tmp_mountpoint_end_size=2600MB
+    tmp_mountpoint_end_size=3500MB
     first_grow_condition_size=1800
     blob_layer_reg_str=r2s
     # [ ! -d /sys/block/$block_device ] && block_device='mmcblk1'
@@ -134,7 +134,7 @@ function r2s(){
 
 function r4s(){
     #part_prefix=p
-    tmp_mountpoint_end_size=2600MB
+    tmp_mountpoint_end_size=3500MB
     first_grow_condition_size=1800
     blob_layer_reg_str=r4s
     # [ ! -d /sys/block/$block_device ] && block_device='mmcblk1'
@@ -143,7 +143,7 @@ function r4s(){
 
 function doornet2(){
     #part_prefix=p
-    tmp_mountpoint_end_size=2600MB
+    tmp_mountpoint_end_size=3500MB
     first_grow_condition_size=1800
     blob_layer_reg_str=doornet2
     # [ ! -d /sys/block/$block_device ] && block_device='mmcblk1'
@@ -152,7 +152,7 @@ function doornet2(){
 
 function x86_64(){
     #part_prefix=''
-    tmp_mountpoint_end_size=2400MB
+    tmp_mountpoint_end_size=3500MB
     first_grow_condition_size=1500
     blob_layer_reg_str=x86_64
     update
@@ -552,7 +552,7 @@ function main(){
         fi
     fi
 
-    tmp_mountpoint_end_size=2600MB
+    tmp_mountpoint_end_size=3500MB
     first_grow_condition_size=1800
     blob_layer_reg_str=$board_id
 
