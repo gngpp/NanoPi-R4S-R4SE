@@ -29,7 +29,7 @@ env:
 
 jobs:
 
-  compile-init:
+  CompileInitialize:
     runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
 
@@ -100,26 +100,26 @@ jobs:
         cd $OPENWRTROOT
         cat .config
 
-  compile-toolchain:
+  CompileToolchain:
     runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
-    needs: [compile-init]
+    needs: [CompileInitialize]
 
     steps:
     - name: Compile toolchain
       id: compile
       run: | 
-        cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
+        cd ${{ needs.CompileInitialize.outputs.OPENWRTROOT }}
         echo -e "$(nproc) thread compile"
         make tools/compile -j$(nproc)
         make toolchain/compile -j$(nproc)
         make target/compile -j$(nproc)
         make diffconfig
   
-  compile-package:
+  CompileFirmware:
     runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
-    needs: [compile-init, compile-toolchain]
+    needs: [CompileInitialize, CompileToolchain]
 
     outputs:
       OPENWRTROOT: ${{ steps.compile.outputs.OPENWRTROOT }}
@@ -137,7 +137,7 @@ jobs:
     - name: Compile package
       id: compile
       run: |
-        cd ${{ needs.compile-init.outputs.OPENWRTROOT }}
+        cd ${{ needs.CompileInitialize.outputs.OPENWRTROOT }}
         OPENWRTROOT=$(pwd)
         echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_ENV
         echo "OPENWRTROOT=$OPENWRTROOT" >> $GITHUB_OUTPUT
@@ -212,15 +212,15 @@ jobs:
                 docker = 带docker" > release.txt
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
-  upload:
+  UploadFirmware:
     runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
-    needs: [compile-package]
+    needs: [CompileFirmware]
 
     steps:
   
     - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.compile-package.outputs.RELEASE_SUCCESS == 'success'
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.CompileFirmware.outputs.RELEASE_SUCCESS == 'success'
       run: | 
         ID_LIST="$(docker images -q)"
         if [[ -n "${ID_LIST}" ]];then
@@ -230,14 +230,14 @@ jobs:
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
-      if: needs.compile-package.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
+      if: needs.CompileFirmware.outputs.RELEASE_SUCCESS == 'success' && !cancelled() && env.UPLOAD_RELEASE == 'true'
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-          name: ${{ needs.compile-package.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux-5.4_固件下载
-          tag_name: ${{ needs.compile-package.outputs.RELEASE_TAG }}
+          name: ${{ needs.CompileFirmware.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux-5.4_固件下载
+          tag_name: ${{ needs.CompileFirmware.outputs.RELEASE_TAG }}
           body_path: release.txt
-          files: ${{ needs.compile-package.outputs.FIRMWARE }}/*
+          files: ${{ needs.CompileFirmware.outputs.FIRMWARE }}/*
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0

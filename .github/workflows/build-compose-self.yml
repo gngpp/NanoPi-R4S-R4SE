@@ -1,30 +1,39 @@
-#=================================================
-# https://github.com/P3TERX/Actions-OpenWrt
-# Description: Build OpenWrt using GitHub Actions
-# Lisence: MIT
-# Author: P3TERX
-# Blog: https://p3terx.com
-#=================================================
-
-name: build-compose
+name: build-compose-self
 
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      use_machine:
-        description: 'Machine'
+      compose:
+        description: Compose jobs
         required: true
-        default: '10900T' 
+        default: "Yes"
         type: choice
         options:
-        - 10900T
-        - 10850K
-  #schedule:
-    #- cron: 0 17 * * *
-  # watch:
-  #   types: started
-  
+          - "Yes"
+          - "No"
+      download:
+        description: Download source code
+        default: "No"
+        type: choice
+        options:
+          - "Yes"
+          - "No"
+      compile:
+        description: Compile source code
+        default: "No"
+        type: choice
+        options:
+          - "Yes"
+          - "No"
+      use_machine:
+        description: 'Compile machine'
+        required: true
+        default: "10900T"
+        type: choice
+        options:
+        - "10900T"
+        - "10850K"
 
 env:
   REPO_URL: https://github.com/DHDAXCW/lede-rockchip
@@ -36,43 +45,55 @@ env:
   TZ: Asia/Shanghai
   IMAGE: ${{ vars.IMAGE }}
   COMMIT_ID: ${{ vars.COMMIT_ID }}
-
+  
 jobs:
 
   DownloadSourceCode:
+    if: ${{ inputs.download }} == "Yes" || ${{ inputs.compose }} =="Yes" || ${{ inputs.compile }} == "Yes"
     runs-on: ubuntu-20.04
     outputs:
-      OPENWRTROOT: ${{ steps.reset.outputs.OPENWRTROOT }}
+      OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
     steps:
-  
-    - name: Initialization Environment
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        echo -e "Total CPU cores\t: $(nproc)"
-        cat /proc/cpuinfo | grep 'model name'
-        free -h
-        uname -a
-        [ -f /proc/version ] && cat /proc/version
-        [ -f /etc/issue.net ] && cat /etc/issue.net
-        [ -f /etc/issue ] && cat /etc/issue
-        ulimit -a
 
+    - name: Show choice
+      run: |
+        echo "Download choice=${{ inputs.download }}"
+        echo "Compile choice=${{ inputs.compile }}"
+        echo "Compose choice=${{ inputs.compose }}"
+        echo "Compile machine=${{ inputs.use_machine }}"
+    - name: Initialization Environment
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
+      run: |
+        echo "警告⚠"
+        echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
+        echo -e "已知CPU型号（降序）：8370C，8272CL，8171M，E5-2673 \n"
+        echo "--------------------------CPU信息--------------------------"
+        echo "CPU物理数量：$(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
+        echo -e "CPU核心信息：$(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c) \n"
+        echo "--------------------------内存信息--------------------------"
+        echo "已安装内存详细信息："
+        echo -e "$(sudo lshw -short -C memory | grep GiB) \n"
+        echo "--------------------------硬盘信息--------------------------"
+        echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+    
     - name: Checkout
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       uses: actions/checkout@v3
 
     - name: Login to Docker Hub
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
-
+        
     - name: Clone Source Code
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-        
     - name: Reset Version
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       id: reset
       run: |
         cd openwrt
@@ -81,8 +102,9 @@ jobs:
         echo "COMMIT_ID version: $COMMIT_ID"
         git reset --hard $COMMIT_ID
         rm -rf .git
-        
     - name: Clone Custom Feeds
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
+      id: update
       run: |
         cd $OPENWRTROOT
         mkdir customfeeds
@@ -92,12 +114,14 @@ jobs:
         ../scripts/hook-feeds.sh
   
     - name: Update And install Feeds
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: | 
         cd $OPENWRTROOT
         chmod +x ../scripts/*.sh
         ../scripts/feeds_settings.sh
         
     - name: Load Custom Configuration
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: |
         [ -e files ] && mv files $OPENWRTROOT/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRTROOT/.config
@@ -107,8 +131,9 @@ jobs:
         ../scripts/preset-clash-core.sh arm64
         ../scripts/preset-terminal-tools.sh
         make defconfig
-
+        
     - name: Download DLL
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       id: package
       run: |
         cd $OPENWRTROOT
@@ -116,12 +141,12 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
         ls -lah dl
-
     - name: Comporession
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: |
         tar --zstd -cf openwrt.tar.zst ./openwrt
-        
     - name: Build and push
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       id: docker_build
       uses: docker/build-push-action@v2
       with:
@@ -131,9 +156,11 @@ jobs:
         tags: ${{ vars.IMAGE }}
         
     - name: Image digest
+      if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: echo ${{ steps.docker_build.outputs.digest }}
 
   CompileInitialize:
+    if: inputs.compile || inputs.compose
     runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
     timeout-minutes: 1440
     needs: [DownloadSourceCode]

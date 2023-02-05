@@ -20,7 +20,7 @@ env:
 
 jobs:
 
-  source-code:
+  DownloadSourceCode:
     runs-on: ubuntu-20.04
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
