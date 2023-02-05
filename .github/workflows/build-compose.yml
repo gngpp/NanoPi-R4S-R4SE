@@ -12,7 +12,7 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      use_machine:
+      machine:
         description: 'Machine'
         required: true
         default: '10900T' 
@@ -134,7 +134,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
 
   CompileInitialize:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [DownloadSourceCode]
 
@@ -206,7 +206,7 @@ jobs:
         cat .config
 
   CompileToolchain:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [CompileInitialize]
 
@@ -222,7 +222,7 @@ jobs:
         make diffconfig
   
   CompileFirmware:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [CompileInitialize, CompileToolchain]
 
@@ -318,7 +318,7 @@ jobs:
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
   UploadFirmware:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [CompileFirmware]
 

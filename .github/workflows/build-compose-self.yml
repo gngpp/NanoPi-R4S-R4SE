@@ -26,7 +26,7 @@ on:
         options:
           - "Yes"
           - "No"
-      use_machine:
+      machine:
         description: 'Compile machine'
         required: true
         default: "10900T"
@@ -60,7 +60,7 @@ jobs:
         echo "Download choice=${{ inputs.download }}"
         echo "Compile choice=${{ inputs.compile }}"
         echo "Compose choice=${{ inputs.compose }}"
-        echo "Compile machine=${{ inputs.use_machine }}"
+        echo "Compile machine=${{ inputs.machine }}"
     - name: Initialization Environment
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: |
@@ -161,7 +161,7 @@ jobs:
 
   CompileInitialize:
     if: inputs.compile || inputs.compose
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [DownloadSourceCode]
 
@@ -233,7 +233,7 @@ jobs:
         cat .config
 
   CompileToolchain:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [CompileInitialize]
 
@@ -249,7 +249,7 @@ jobs:
         make diffconfig
   
   CompileFirmware:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [CompileInitialize, CompileToolchain]
 
@@ -345,7 +345,7 @@ jobs:
           echo "RELEASE_SUCCESS=success" >> $GITHUB_OUTPUT
 
   UploadFirmware:
-    runs-on: [self-hosted, Linux, X64, "${{ inputs.use_machine }}"]
+    runs-on: [self-hosted, Linux, X64, "${{ inputs.machine }}"]
     timeout-minutes: 1440
     needs: [CompileFirmware]
 
