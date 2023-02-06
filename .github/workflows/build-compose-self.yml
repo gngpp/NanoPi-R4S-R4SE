@@ -101,7 +101,7 @@ jobs:
       run: |
         df -hT $PWD
         echo "using repository: $USE_REPO"
-        git clone $USE_REPO -b $REPO_BRANCH openwrt
+        git clone $USE_REPO openwrt
 
     - name: Reset Version
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
