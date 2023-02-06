@@ -44,8 +44,7 @@ on:
         - "10850K"
 
 env:
-  REPO_URL: https://github.com/DHDAXCW/lede-rockchip
-  REPO_BRANCH: stable
+  REPO_BRANCzH: stable
   CONFIG_FILE: configs/lean/lean_docker.config
   DIY_SH: scripts/lean.sh
   KMODS_IN_FIRMWARE: true
@@ -111,8 +110,10 @@ jobs:
         cd openwrt
         echo "OPENWRTROOT=$PWD" >> $GITHUB_ENV
         echo "OPENWRTROOT=$PWD" >> $GITHUB_OUTPUT
-        echo "COMMIT_ID version: $COMMIT_ID"
-        git reset --hard $COMMIT_ID
+        # if $USE_REPO == "https://github.com/DHDAXCW/lede-rockchip"; then
+        #   echo "COMMIT_ID version: $COMMIT_ID"
+        #   git reset --hard $COMMIT_ID
+        # fi
         rm -rf .git
     - name: Clone Custom Feeds
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
