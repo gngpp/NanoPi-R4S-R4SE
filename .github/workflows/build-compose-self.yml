@@ -4,6 +4,14 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
+      repository:
+        description: Use openwrt repository
+        required: true
+        default: "https://github.com/DHDAXCW/lede-rockchip"
+        type: choice
+        options:
+          - "https://github.com/DHDAXCW/lede-rockchip"
+          - "https://github.com/coolsnowwolf/lede"
       compose:
         description: Compose jobs
         required: true
@@ -44,6 +52,7 @@ env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   IMAGE: ${{ vars.IMAGE }}
+  USE_REPO: ${{ inputs.repository }}
   COMMIT_ID: ${{ vars.COMMIT_ID }}
   
 jobs:
@@ -91,7 +100,8 @@ jobs:
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: |
         df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        git clone $USE_REPO -b $REPO_BRANCH openwrt
+        
     - name: Reset Version
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       id: reset
