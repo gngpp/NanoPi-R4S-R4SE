@@ -66,6 +66,7 @@ jobs:
 
     - name: Show choice
       run: |
+        echo "Repository choice=${{ input.repository }}"
         echo "Download choice=${{ inputs.download }}"
         echo "Compile choice=${{ inputs.compile }}"
         echo "Compose choice=${{ inputs.compose }}"
