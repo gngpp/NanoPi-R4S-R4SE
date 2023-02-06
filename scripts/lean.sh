@@ -174,5 +174,11 @@ wget -P target/linux/rockchip/armv8/base-files/usr/bin/ https://github.com/frien
 
 # usb wifi init
 # svn export https://github.com/coolsnowwolf/lede/trunk/target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb/
-# Test kernel 5.15
-#sed -i 's/5.4/6.1/g' ./target/linux/rockchip/Makefile
+
+# lean repository
+if [ "$USE_REPO" == "https://github.com/coolsnowwolf/lede" ]; then
+    #kernel
+    sed -i 's/5.15/5.4/g' ./target/linux/rockchip/Makefile
+    # 8821cu
+    svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/kernel/rtl8821cu package/kernel/rtl8821cu
+fi

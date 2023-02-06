@@ -100,8 +100,9 @@ jobs:
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: |
         df -hT $PWD
+        echo "using repository: $USE_REPO"
         git clone $USE_REPO -b $REPO_BRANCH openwrt
-        
+
     - name: Reset Version
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       id: reset
