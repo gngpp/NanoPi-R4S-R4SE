@@ -11,7 +11,6 @@ on:
         type: choice
         options:
           - "https://github.com/DHDAXCW/lede-rockchip"
-          - "https://github.com/coolsnowwolf/lede"
       compose:
         description: Compose jobs
         required: true
@@ -379,7 +378,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-          name: ${{ needs.CompileFirmware.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux-5.4_固件下载
+          name: ${{ needs.CompileFirmware.outputs.RELEASE_DATE }} NanoPi-R4S-R4SE-linux-6.1_固件下载
           tag_name: ${{ needs.CompileFirmware.outputs.RELEASE_TAG }}
           body_path: release.txt
           files: ${{ needs.CompileFirmware.outputs.FIRMWARE }}/*
