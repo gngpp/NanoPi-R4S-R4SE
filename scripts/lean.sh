@@ -122,7 +122,7 @@ svn export https://github.com/openwrt/packages/trunk/utils/apk
 git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff
 
 # Add OpenAppFilter
-git clone --depth=1 https://github.com/DHDAXCW/OpenAppFilter
+#git clone --depth=1 https://github.com/DHDAXCW/OpenAppFilter
 
 # Add luci-aliyundrive-webdav
 rm -rf ../../customfeeds/luci/applications/luci-app-aliyundrive-webdav 
@@ -149,7 +149,7 @@ popd
 
 # Fix mt76 wireless driver
 pushd package/kernel/mt76
-sed -i '/mt7662u_rom_patch.bin/a\\techo mt76-usb disable_usb_sg=1 > $\(1\)\/etc\/modules.d\/mt76-usb' Makefile
+#sed -i '/mt7662u_rom_patch.bin/a\\techo mt76-usb disable_usb_sg=1 > $\(1\)\/etc\/modules.d\/mt76-usb' Makefile
 popd
 
 # Change default shell to zsh
