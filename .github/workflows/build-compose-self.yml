@@ -69,6 +69,13 @@ jobs:
         echo "Compile choice=${{ inputs.compile }}"
         echo "Compose choice=${{ inputs.compose }}"
         echo "Compile machine=${{ inputs.machine }}"
+
+    - name: Set Timezone
+      run: |
+        sudo rm -rf /etc/localtime 
+        sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+        date
+        
     - name: Initialization Environment
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       run: |
