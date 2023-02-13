@@ -77,6 +77,7 @@ svn export https://github.com/vernesong/OpenClash/trunk/luci-app-openclash
 svn export https://github.com/linkease/nas-packages-luci/trunk/luci/luci-app-ddnsto
 svn export https://github.com/linkease/nas-packages/trunk/network/services/ddnsto
 svn export https://github.com/linkease/nas-packages-luci/trunk/luci/luci-app-linkease
+svn export https://github.com/linkease/nas-packages/trunk/network/services/linkease
 
 # Add ServerChan
 git clone --depth=1 https://github.com/tty228/luci-app-serverchan
