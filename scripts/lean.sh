@@ -73,8 +73,6 @@ git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
 # Add OpenClash
 svn export https://github.com/vernesong/OpenClash/trunk/luci-app-openclash
 
-
-
 # Add ServerChan
 git clone --depth=1 https://github.com/tty228/luci-app-serverchan
 
