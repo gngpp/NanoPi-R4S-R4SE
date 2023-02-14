@@ -176,5 +176,11 @@ wget -P target/linux/rockchip/armv8/base-files/usr/bin/ https://github.com/frien
 sed -i 's/5.4/6.1/g' ./target/linux/rockchip/Makefile
 rm -rf target/linux/rockchip/image/armv8.mk
 cp -f $GITHUB_WORKSPACE/armv8.mk target/linux/rockchip/image/armv8.mk
-# 8821cu
-# svn export https://github.com/DHDAXCW/lede-rockchip/trunk/package/kernel/rtl8821cu package/kernel/rtl8821cu
+# wifi driver
+rm -rf package/kernel/rtl8821cu
+rm -rf package/kernel/mac80211
+rm -rf package/kernel/mt76
+rm -rf package/network/services/hostapd
+svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mac80211 package/kernel/mac80211
+svn export https://github.com/openwrt/openwrt/trunk/package/kernel/mt76 package/kernel/mt76
+svn export https://github.com/openwrt/openwrt/trunk/package/network/services/hostapd package/network/services/hostapd
