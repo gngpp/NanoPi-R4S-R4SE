@@ -1,4 +1,4 @@
-# NanoPi-R4S-R4SE
+# NanoPi-R4SE
 ## 👉使用本固件前，请严格遵守国家互联网使用相关法律规定,不要违反国家法律规定！👈
 
 ### 固件分类 在[releases](https://github.com/gngpp/NanoPi-R4S-2021/releases)有备注关键词
@@ -28,7 +28,7 @@ PROXY=gh.flyinbug.top/gh bash+x ~/update.sh
 ### 默认编译  
 
 - 用户名：root 密码：password  管理IP：10.0.1.1
-- 下载地址：https://github.com/gngpp/NanoPi-R4S-R4SE/releases
+- 下载地址：https://github.com/gngpp/NanoPi-R4SE/releases
 - 电报群：https://t.me/DHDAXCW
 
 ### 预览
