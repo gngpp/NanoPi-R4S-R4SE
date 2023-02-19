@@ -26,7 +26,7 @@ PROXY=gh.flyinbug.top/gh bash+x ~/update.sh
 ```
 
 ### 默认编译  
-> 事先说明，楼主的RK3399体质比较辣鸡，特意调了超频电压，请按需改（假如超坏了也别找楼主）
+> 事先说明，楼主的RK3399体质比较辣鸡，特意调了超频电压，请按需改（假如超坏了也别找楼主），自带USB comfast cf-811ac驱动和GPU驱动。
 - 用户名：root 密码：password  管理IP：10.0.1.1
 - 下载地址：https://github.com/gngpp/NanoPi-R4SE/releases
 - 电报群：https://t.me/DHDAXCW
