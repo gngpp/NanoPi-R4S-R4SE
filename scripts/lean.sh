@@ -187,3 +187,6 @@ rm c10101fc0cf186196a354a91a75bf2856630dd68.patch
 
 rm ./target/linux/rockchip/modules.mk
 cp ../target/linux/rockchip/modules.mk ./target/linux/rockchip/modules.mk
+
+rm ./package/kernel/linux/modules/video.mk
+cp ../package/kernel/linux/modules/video.mk ./package/kernel/linux/modules/video.mk
