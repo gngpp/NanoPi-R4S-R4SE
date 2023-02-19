@@ -184,3 +184,6 @@ git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
 git apply c10101fc0cf186196a354a91a75bf2856630dd68.patch
 rm f341ef96fe4b509a728ba1281281da96bac23673.patch
 rm c10101fc0cf186196a354a91a75bf2856630dd68.patch
+
+rm ./target/linux/rockchip/modules.mk
+cp ../target/linux/rockchip/modules.mk ./target/linux/rockchip/modules.mk
