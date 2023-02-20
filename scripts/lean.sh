@@ -1,11 +1,4 @@
 #!/bin/bash
-#=================================================
-# System Required: Linux
-# Version: 1.0
-# Lisence: MIT
-# Author: SuLingGG
-# Blog: https://mlapp.cn
-#=================================================
 
 # Add cpufreq
 rm -rf ./feeds/luci/applications/luci-app-cpufreq 
@@ -42,14 +35,6 @@ pushd package/community
 git clone --depth=1 https://github.com/Lienol/openwrt-package
 rm -rf openwrt-package/verysync
 rm -rf openwrt-package/luci-app-verysync
-# rm -rf openwrt-package/luci-app-control-timewol
-# rm -rf openwrt-package/luci-app-control-webrestriction
-# rm -rf openwrt-package/luci-app-control-weburl
-# rm -rf openwrt-package/luci-app-timecontrol
-
-# Add luci-app-adguardhome
-# svn export https://github.com/DHDAXCW/openwrt-packages/trunk/luci-app-adguardhome
-# svn co https://github.com/Lienol/openwrt-package/branches/other/luci-app-adguardhome
 
 # Add luci-app-passwall
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
@@ -58,7 +43,6 @@ svn export https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-
 
 # Add luci-app-ssr-plus
 git clone --depth=1 https://github.com/fw876/helloworld
-# git clone --depth=1 https://github.com/DHDAXCW/helloworld
 
 # Add luci-app-unblockneteasemusic
 git clone --branch master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
@@ -75,11 +59,6 @@ svn export https://github.com/vernesong/OpenClash/trunk/luci-app-openclash
 
 # Add ServerChan
 git clone --depth=1 https://github.com/tty228/luci-app-serverchan
-
-# Add luci-app-diskman
-# git clone --depth=1 https://github.com/SuLingGG/luci-app-diskman
-# mkdir parted
-# cp luci-app-diskman/Parted.Makefile parted/Makefile
 
 # Add luci-app-ikoolproxy (godproxy)
 git clone --depth=1 https://github.com/iwrt/luci-app-ikoolproxy.git
@@ -137,12 +116,6 @@ pushd package/lean
 svn export https://github.com/immortalwrt/packages/trunk/net/pandownload-fake-server
 popd
 
-# Mod zzz-default-settings
-pushd package/lean/default-settings/files
-export date_version=$(date -d "$(rdate -n -4 -p ntp.aliyun.com)" +'%Y-%m-%d')
-sed -i "s/${orig_version}/${orig_version} (${date_version})/g" zzz-default-settings
-popd
-
 # Fix mt76 wireless driver
 pushd package/kernel/mt76
 sed -i '/mt7662u_rom_patch.bin/a\\techo mt76-usb disable_usb_sg=1 > $\(1\)\/etc\/modules.d\/mt76-usb' Makefile
@@ -167,9 +140,6 @@ svn export https://github.com/DHDAXCW/packages/trunk/utils/coremark customfeeds/
 # 风扇脚本
 # wget -P target/linux/rockchip/armv8/base-files/etc/init.d/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/etc/init.d/fa-rk3399-pwmfan
 # wget -P target/linux/rockchip/armv8/base-files/usr/bin/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/usr/bin/start-rk3399-pwm-fan.sh
-
-# usb wifi init
-# svn export https://github.com/coolsnowwolf/lede/trunk/target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb target/linux/rockchip/armv8/base-files/etc/hotplug.d/usb/
 
 #kernel
 sed -i 's/6.1/5.4/g' ./target/linux/rockchip/Makefile
