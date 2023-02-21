@@ -22,7 +22,7 @@ SKIP_BACK=1 bash +x ~/update.sh
 USE_PROXY=false bash +x ~/update.sh
 
 # 默认使用ghproxy.com代理，自定义代理执行下面命令
-PROXY=gh.flyinbug.top/gh bash+x ~/update.sh
+PROXY=gh.flyinbug.top/gh bash +x ~/update.sh
 ```
 
 ### 默认编译  
