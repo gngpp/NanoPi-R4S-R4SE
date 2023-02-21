@@ -134,8 +134,8 @@ svn export https://github.com/DHDAXCW/packages/trunk/utils/coremark customfeeds/
 # 风扇脚本
 # mkdir -p target/linux/rockchip/armv8/base-files/etc/init.d/
 # mkdir -p target/linux/rockchip/armv8/base-files/usr/bin/
-# cp -r ../scripts/fa-rk3399-pwmfan target/linux/rockchip/armv8/base-files/etc/init.d/
-# cp -r ../scripts/start-rk3399-pwm-fan.sh target/linux/rockchip/armv8/base-files/usr/bin/
+# cp -r ../build/scripts/fa-rk3399-pwmfan target/linux/rockchip/armv8/base-files/etc/init.d/
+# cp -r ../build/scripts/start-rk3399-pwm-fan.sh target/linux/rockchip/armv8/base-files/usr/bin/
 
 # 风扇脚本
 # wget -P target/linux/rockchip/armv8/base-files/etc/init.d/ https://github.com/friendlyarm/friendlywrt/raw/master-v19.07.1/target/linux/rockchip-rk3399/base-files/etc/init.d/fa-rk3399-pwmfan
@@ -147,16 +147,7 @@ rm -rf ./target/linux/rockchip/patches-5.4/992-rockchip-rk3399-overclock-to-2.2-
 cp ../target/linux/rockchip/patches-5.4/992-rockchip-rk3399-overclock-to-2.2-1.8-GHz-for-NanoPi4.patch ./target/linux/rockchip/patches-5.4/992-rockchip-rk3399-overclock-to-2.2-1.8-GHz-for-NanoPi4.patch
 
 # rockchip: add drm and lima gpu driver
-#wget https://github.com/immortalwrt/immortalwrt/commit/c10101fc0cf186196a354a91a75bf2856630dd68.patch
-#wget https://github.com/coolsnowwolf/lede/raw/757e42d70727fe6b937bb31794a9ad4f5ce98081/target/linux/rockchip/config-default -NP target/linux/rockchip/
-#wget https://github.com/coolsnowwolf/lede/commit/f341ef96fe4b509a728ba1281281da96bac23673.patch
-#git apply f341ef96fe4b509a728ba1281281da96bac23673.patch
-#git apply c10101fc0cf186196a354a91a75bf2856630dd68.patch
-#rm f341ef96fe4b509a728ba1281281da96bac23673.patch
-#rm c10101fc0cf186196a354a91a75bf2856630dd68.patch
-
 rm ./target/linux/rockchip/modules.mk
 cp ../target/linux/rockchip/modules.mk ./target/linux/rockchip/modules.mk
-
 rm ./package/kernel/linux/modules/video.mk
 cp ../package/kernel/linux/modules/video.mk ./package/kernel/linux/modules/video.mk
