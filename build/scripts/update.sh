@@ -20,7 +20,7 @@ tmp_mountpoint=/opt
 NO_NET=''
 
 # gh.flyinbug.top/gh、ghproxy.com
-: ${PROXY:=ghproxy.com}
+: ${PROXY:=gh.flyinbug.top/gh}
 
 # 必须 /tmp 目录里操作
 WORK_DIR=/tmp/update
@@ -413,7 +413,7 @@ function update(){
             ${comp} ${LZMA_XZ_OPTIONS} \
             -b $[sq_block_size/1024]k \
             -p '/dev d 755 0 0' -p '/dev/console c 600 0 0 5 1' \
-            $xattrs -mem 20M 
+            $xattrs -mem 50M 
     fi
 
     mountpoint -q  /mnt/update/img && umount /mnt/update/img
