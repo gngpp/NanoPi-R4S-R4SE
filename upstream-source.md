@@ -92,19 +92,3 @@
   
   https://github.com/jerrykuku/lua-maxminddb
   
-- luci-theme-argon:
-  
-  https://github.com/jerrykuku/luci-theme-argon
-  
-- luci-app-argon-config:
-
-  https://github.com/jerrykuku/luci-app-argon-config
-
-- luci-udptools:
-  
-  https://github.com/bao3/openwrt-udp2raw
-  
-  https://github.com/bao3/openwrt-udpspeeder
-  
-  https://github.com/bao3/luci-udptools
-
