@@ -104,7 +104,7 @@ Co-authored-by: gzelvis <gzelvis@gmail.com>
 +		};
 +		opp08 {
 +			opp-hz = /bits/ 64 <2016000000>;
-+			opp-microvolt = <1300000>;
++			opp-microvolt = <1325000>;
 +		};
 +		opp09 {
 +			opp-hz = /bits/ 64 <2208000000>;
