@@ -74,7 +74,7 @@ git clone --depth=1 https://github.com/lisaac/luci-app-dockerman
 git clone --depth=1 https://github.com/lisaac/luci-lib-docker
 
 # Add luci-theme
-git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
+git clone --depth=1 https://github.com/gngpp/luci-app-design-config
 git clone --depth=1 https://github.com/gngpp/luci-theme-design
 git clone --depth=1 https://github.com/gngpp/luci-theme-atmaterial
 
