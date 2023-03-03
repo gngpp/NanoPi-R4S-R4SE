@@ -11,6 +11,7 @@ set -e
 : ${USER_REPO=gngpp/NanoPi-R4SE}
 : ${USE_PROXY:=true}
 : ${VERSION:=docker}
+: ${EXPAND:=false}
 
 tmp_mountpoint=/opt
 
@@ -262,6 +263,17 @@ function update(){
         success "解压固件文件到: ${USE_FILE}"
     fi
     
+    if [ "$EXPAND" = 'false' ];then
+        info "进行非扩容升级..."
+    	if [ "$SKIP_BACK" != false ];then
+	        sysupgrade ${USE_FILE}
+	    else 
+	        sysupgrade -n ${USE_FILE}
+	    fi
+        printf '%b\n' "\033[1;32m[SUCCESS] 刷机完毕，正在重启，如果重启无响应请拔插电源...\033[0m"
+        exit 0
+    fi
+
     truncate -s $bs $USE_FILE
     rm -f /tmp/parted_info
     parted --script $USE_FILE p 2>&1 | tee -a /tmp/parted_info
