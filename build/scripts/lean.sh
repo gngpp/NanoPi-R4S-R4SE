@@ -60,12 +60,6 @@ svn export https://github.com/vernesong/OpenClash/trunk/luci-app-openclash
 # Add ServerChan
 git clone --depth=1 https://github.com/tty228/luci-app-serverchan
 
-# Add luci-app-ikoolproxy (godproxy)
-git clone --depth=1 https://github.com/iwrt/luci-app-ikoolproxy.git
-
-# kodexplorer
-rm -rf ../../customfeeds/luci/applications/luci-app-kodexplorer
-
 # Add luci-app-dockerman
 rm -rf ../../customfeeds/luci/collections/luci-lib-docker
 rm -rf ../../customfeeds/luci/applications/luci-app-docker
