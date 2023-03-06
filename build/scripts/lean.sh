@@ -17,9 +17,6 @@ git clone https://github.com/DHDAXCW/luci-app-alist package/alist
 rm -rf feeds/packages/lang/golang
 svn export https://github.com/sbwml/packages_lang_golang/branches/19.x feeds/packages/lang/golang
 
-# speedtest
-git clone https://github.com/sirpdboy/netspeedtest.git package/netspeedtest
- 
 # control
 rm -rf ./feeds/luci/applications/luci-app-control-speedlimit
 rm -rf ./feeds/luci/applications/luci-app-timecontrol
@@ -108,11 +105,6 @@ popd
 # Add Pandownload
 pushd package/lean
 svn export https://github.com/immortalwrt/packages/trunk/net/pandownload-fake-server
-popd
-
-# Fix mt76 wireless driver
-pushd package/kernel/mt76
-sed -i '/mt7662u_rom_patch.bin/a\\techo mt76-usb disable_usb_sg=1 > $\(1\)\/etc\/modules.d\/mt76-usb' Makefile
 popd
 
 # Change default shell to zsh
