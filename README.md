@@ -36,7 +36,7 @@ EXPAND=true PROXY=gh.flyinbug.top/gh bash +x ~/update.sh
 - 电报群：https://t.me/DHDAXCW
 
 ### 预览
-<img src="./preview/login.png"/>
-<img src="./preview/home.png"/>
-<img src="./preview/vssr.png"/>
-<img src="./preview/light.png"/>
+<img src="./build/preview/login.png"/>
+<img src="./build/preview/home.png"/>
+<img src="./build/preview/vssr.png"/>
+<img src="./build/preview/light.png"/>
