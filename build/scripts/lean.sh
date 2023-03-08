@@ -13,7 +13,7 @@ sed -i 's,1512,1608,g' feeds/luci/applications/luci-app-cpufreq/root/etc/uci-def
 # 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
 
 # alist
-git clone https://github.com/DHDAXCW/luci-app-alist package/alist
+git clone https://github.com/sbwml/luci-app-alist package/alist
 rm -rf feeds/packages/lang/golang
 svn export https://github.com/sbwml/packages_lang_golang/branches/19.x feeds/packages/lang/golang
 
