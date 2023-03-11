@@ -24,6 +24,11 @@ rm -rf ./feeds/luci/applications/luci-app-control-timewol
 rm -rf ./feeds/luci/applications/luci-app-control-webrestriction
 rm -rf ./feeds/luci/applications/luci-app-control-weburl
 
+# remove old watchcat
+rm -rf feeds/packages/utils/watchcat
+svn co https://github.com/openwrt/packages/trunk/utils/watchcat feeds/packages/utils/watchcat
+git clone https://github.com/gngpp/luci-app-watchcat-plus.git package/luci-app-watchcat-plus
+
 # Clone community packages
 mkdir package/community
 pushd package/community
