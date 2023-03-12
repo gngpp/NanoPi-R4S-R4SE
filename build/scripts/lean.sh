@@ -32,8 +32,8 @@ git clone https://github.com/gngpp/luci-app-watchcat-plus.git package/luci-app-w
 # Add luci-theme
 rm -rf feeds/luci/themes/luci-theme-design
 rm -rf feeds/luci/applications/luci-app-design-config
-git clone --depth=1 https://github.com/gngpp/luci-app-design-config
-git clone --depth=1 https://github.com/gngpp/luci-theme-design
+git clone --depth=1 https://github.com/gngpp/luci-app-design-config package/luci-app-design-config
+git clone --depth=1 https://github.com/gngpp/luci-theme-design package/luci-theme-design
 
 # Clone community packages
 mkdir package/community
