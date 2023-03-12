@@ -38,7 +38,3 @@ svn co https://github.com/immortalwrt/packages/trunk/net/minieap packages/net/mi
 # Replace smartdns with the official version
 rm -rf packages/net/smartdns
 svn co https://github.com/openwrt/packages/trunk/net/smartdns packages/net/smartdns
-
-# Add luci-app-udp2raw
-git clone --depth=1 https://github.com/gngpp/luci-app-udp2raw luci/applications/luci-app-udp2raw
-svn co https://github.com/immortalwrt/packages/branches/openwrt-18.06/net/udp2raw packages/net/udp2raw
