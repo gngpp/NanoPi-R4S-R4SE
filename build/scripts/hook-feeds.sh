@@ -14,6 +14,10 @@ pushd customfeeds
 #git clone --depth=1 https://github.com/rufengsuixing/luci-app-onliner
 svn co https://github.com/immortalwrt/luci/branches/openwrt-18.06-k5.4/applications/luci-app-onliner luci/applications/luci-app-onliner
 
+# Add luci-app-udp2raw
+git clone --depth=1 https://github.com/gngpp/luci-app-udp2raw luci/applications/luci-app-udp2raw
+svn co https://github.com/immortalwrt/packages/branches/openwrt-18.06/net/udp2raw packages/net/udp2raw
+
 # Add luci-app-eqos
 svn co https://github.com/immortalwrt/luci/trunk/applications/luci-app-eqos luci/applications/luci-app-eqos
 mv ./luci/applications/luci-app-eqos/po/zh_Hans ./luci/applications/luci-app-eqos/po/zh-cn
