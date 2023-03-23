@@ -368,14 +368,14 @@ jobs:
 
     steps:
   
-    - name: Remove Images
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.CompileFirmware.outputs.RELEASE_SUCCESS == 'success'
-      run: | 
-        ID_LIST="$(docker images -q)"
-        if [[ -n "${ID_LIST}" ]];then
-           docker rmi $ID_LIST -f
-        fi
-        docker images
+#     - name: Remove Images
+#       if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.CompileFirmware.outputs.RELEASE_SUCCESS == 'success'
+#       run: | 
+#         ID_LIST="$(docker images -q)"
+#         if [[ -n "${ID_LIST}" ]];then
+#            docker rmi $ID_LIST -f
+#         fi
+#         docker images
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
