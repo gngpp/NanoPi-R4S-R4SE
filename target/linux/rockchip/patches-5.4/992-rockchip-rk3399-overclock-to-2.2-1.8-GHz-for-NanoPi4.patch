@@ -108,7 +108,7 @@ Co-authored-by: gzelvis <gzelvis@gmail.com>
 +		};
 +		opp09 {
 +			opp-hz = /bits/ 64 <2208000000>;
-+			opp-microvolt = <1380000>;
++			opp-microvolt = <1360000>;
 +		};
 +	};
 +
