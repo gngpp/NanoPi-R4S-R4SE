@@ -61,7 +61,7 @@ Co-authored-by: gzelvis <gzelvis@gmail.com>
 +		};
 +		opp07 {
 +			opp-hz = /bits/ 64 <1800000000>;
-+			opp-microvolt = <1325000>;
++			opp-microvolt = <1350000>;
 +		};
 +	};
 +
@@ -108,7 +108,7 @@ Co-authored-by: gzelvis <gzelvis@gmail.com>
 +		};
 +		opp09 {
 +			opp-hz = /bits/ 64 <2208000000>;
-+			opp-microvolt = <1375000>;
++			opp-microvolt = <1380000>;
 +		};
 +	};
 +
