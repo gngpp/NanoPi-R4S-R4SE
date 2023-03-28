@@ -371,11 +371,11 @@ jobs:
     - name: Remove Images
       if: env.UPLOAD_RELEASE == 'true' && !cancelled() && needs.CompileFirmware.outputs.RELEASE_SUCCESS == 'success'
       run: | 
-         MAX_DISK_USAGE=10GB
-         CURRENT=$(docker system df --format '{{.Size}}' | head -n1)
-         if [ $(echo "$CURRENT > $MAX_DISK_USAGE" | bc) -eq 1 ]; then
-            docker rmi $(docker images -q) -f
-         fi
+        MAX_DISK_USAGE="10G"
+        CURRENT=$(docker system df --format '{{.Size}}' | head -n1 | sed 's/B$//')
+        if (( $(numfmt --from=iec $CURRENT) > $(numfmt --from=iec $MAX_DISK_USAGE) )); then
+          docker rmi $(docker images -q) -f
+        fi
 
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
