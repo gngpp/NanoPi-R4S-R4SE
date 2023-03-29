@@ -99,8 +99,9 @@ jobs:
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.TOKEN }}
         
     - name: Clone Source Code
       if: ${{ inputs.download == 'Yes' || inputs.compose == 'Yes' }}
@@ -310,6 +311,7 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "FIRMWARE=$PWD" >> $GITHUB_OUTPUT
         echo "COMPILE_STATUS=success" >> $GITHUB_OUTPUT
+
     - name: Generate Firmware
       if: steps.compile.outputs.COMPILE_STATUS == 'success'
       id: generate
